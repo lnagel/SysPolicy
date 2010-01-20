@@ -3,6 +3,8 @@
 
 import yaml
 
+DEFAULT = "_default_"
+
 class Config:
     def __init__(self):
         self.data = {}
@@ -18,10 +20,21 @@ class Config:
         cf.close()
     
     def print_all(self):
-        for section in self.data:
-            print "Section:", section
-            if self.data[section]:
-                for option in self.data[section]:
-                    print " ", option, "=", self.data[section][option]
+        print yaml.dump(self.data, default_flow_style=False)
+    
+    def sections(self):
+        return self.data.keys()
+        
+    def attributes(self, section = DEFAULT):
+        if section in self.data and type(self.data[section]) is dict:
+            return self.data[section].keys()
+        else:
+            return {}
 
+    def get(self, section, attribute):
+        if section in self.data and type(self.data[section]) is dict:
+            if attribute in self.data[section]:
+                return self.data[section][attribute]
+        return None
+        
 
