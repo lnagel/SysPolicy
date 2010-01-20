@@ -1,0 +1,23 @@
+_default_:
+    basedir: /home
+    uid_min: 1000
+    uid_max: 2000
+    gid_min: %(uid_min)s
+    gid_max: %(uid_max)s
+
+    usergroups: false
+    grouphomes: false
+
+    userquota: {}
+
+users:
+    usergroups: true
+
+www-users:
+    basedir: /srv
+    grouphomes: true
+    usergroups: true
+    uid_min: 10000
+    uid_max: 12000
+
+    userquota: {'/srv': '100M'}
