@@ -1,18 +1,33 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import yaml
+import copy
 
 from config import Config, DEFAULT
 
 class Policy(Config):
     
-    def get(self, section, attribute):
-        if section in self.data and type(self.data[section]) is dict:
-            if attribute in self.data[section]:
-                return self.data[section][attribute]
-        elif DEFAULT in self.data and type(self.data[DEFAULT]) is dict:
-            if attribute in self.data[DEFAULT]:
-                return self.data[DEFAULT][attribute]
+    def get(self, path = []):
+        val = None
+        if type(path) is list:
+            val = self.get_branch(path)
+            
+            if len(path) >= 1:
+                defpath = [DEFAULT] + path[1:]
+                defval = self.get_branch(defpath)
                 
-        return None
+                if val is None:
+                    val = copy.deepcopy(defval)
+                elif type(val) is dict and type(defval) is dict:
+                    m = copy.deepcopy(defval)
+                    merge_into(m, val)
+                    val = m
+        return val
+        
+def merge_into(base, over):
+    #print "merge_into(", base, ",", over, ")"
+    for key, item in over.items():
+        if type(item) is dict and key in base and type(base[key]) is dict:
+            merge_into(base[key], item)
+        else:
+            base[key] = item

@@ -30,11 +30,16 @@ class Config:
             return self.data[section].keys()
         else:
             return {}
-
-    def get(self, section, attribute):
-        if section in self.data and type(self.data[section]) is dict:
-            if attribute in self.data[section]:
-                return self.data[section][attribute]
-        return None
         
+    def get_branch(self, path = []):
+        if type(path) is list:
+            pos = self.data
+            for node in path:
+                if node in pos:
+                    pos = pos[node]
+                else:
+                    return None
+            return pos
+        return None
 
+    get = get_branch
