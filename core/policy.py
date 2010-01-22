@@ -8,21 +8,19 @@ from config import Config, DEFAULT
 class Policy(Config):
     
     def get(self, path = []):
-        val = None
-        if type(path) is list:
-            val = self.get_branch(path)
+        val = self.get_branch(path)
+        
+        if type(path) is list and path:
+            defpath = [DEFAULT] + path[1:]
+            defval = self.get_branch(defpath)
             
-            if len(path) >= 1:
-                defpath = [DEFAULT] + path[1:]
-                defval = self.get_branch(defpath)
+            if val is None and defval is not None:
+                val = defval
+            elif type(val) is dict and type(defval) is dict:
+                val = merge_into(copy.deepcopy(defval), val)
                 
-                if val is None:
-                    val = copy.deepcopy(defval)
-                elif type(val) is dict and type(defval) is dict:
-                    m = copy.deepcopy(defval)
-                    merge_into(m, val)
-                    val = m
         return val
+
         
 def merge_into(base, overlay):
     #print "merge_into(", base, ",", overlay, ")"
@@ -31,3 +29,5 @@ def merge_into(base, overlay):
             merge_into(base[key], item)
         else:
             base[key] = item
+            
+    return base
