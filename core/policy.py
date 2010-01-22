@@ -24,9 +24,9 @@ class Policy(Config):
                     val = m
         return val
         
-def merge_into(base, over):
-    #print "merge_into(", base, ",", over, ")"
-    for key, item in over.items():
+def merge_into(base, overlay):
+    #print "merge_into(", base, ",", overlay, ")"
+    for key, item in overlay.items():
         if type(item) is dict and key in base and type(base[key]) is dict:
             merge_into(base[key], item)
         else:
