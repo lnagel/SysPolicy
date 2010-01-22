@@ -33,13 +33,13 @@ class Config:
         
     def get_branch(self, path = []):
         if type(path) is list:
-            pos = self.data
+            branch = self.data
             for node in path:
-                if node in pos:
-                    pos = pos[node]
+                if node in branch:
+                    branch = branch[node]
                 else:
                     return None
-            return pos
+            return branch
         return None
 
     get = get_branch
