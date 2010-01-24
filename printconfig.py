@@ -29,10 +29,12 @@ print '-' * 40
 
 print "users:", gp.get(['users'])
 print "users->userquota:", gp.get(['users', 'userquota'])
+print "users->userquota->/var:", gp.get(['users', 'userquota', '/var'])
 
 print '-' * 40
 
 print "www-users:", gp.get(['www-users'])
 print "www-users->userquota:", gp.get(['www-users', 'userquota'])
+print "www-users->userquota->/var:", gp.get(['www-users', 'userquota', '/var'])
 
 print '-' * 40
