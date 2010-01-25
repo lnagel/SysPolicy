@@ -20,7 +20,7 @@ class Config:
             cf.close()
             return True
         return False
-        
+    
     def save(self, configfile = None):
         if configfile is None and self.source is not None:
             configfile = self.source
