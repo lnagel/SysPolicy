@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import copy
 import yaml
 
 DEFAULT = "_default_"
@@ -56,3 +57,25 @@ class Config:
         return None
 
     get = get_branch
+
+
+def compare_trees(a,  b):
+    r = {}
+    ak = set(a.keys())
+    bk = set(b.keys())
+    
+    for key in ak.difference(bk):
+        r[key] = copy.deepcopy(a[key])
+    for key in bk.difference(ak):
+        r[key] = None
+    for key in ak.intersection(bk):
+        if type(a[key]) is dict and type(b[key]) is dict:
+            diff = compare_trees(a[key],  b[key])
+            if diff:
+                r[key] = diff
+        if type(a[key]) is list and type(b[key]) is list:
+            if set(a[key]).symmetric_difference(set(b[key])):
+                r[key] = copy.deepcopy(a[key])
+        elif type(a[key]) is not type(b[key]) or a[key] is not b[key]:
+            r[key] = copy.deepcopy(a[key])
+    return r
