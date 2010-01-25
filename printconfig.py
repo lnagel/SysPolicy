@@ -6,8 +6,7 @@ from core.policy import Policy
 
 print '-' * 40
 
-config = Config()
-config.load('config/main.conf')
+config = Config('config/main.conf')
 config.print_all()
 
 print '-' * 9, "sections & attributes", '-' * 8
@@ -21,8 +20,7 @@ print config.get(['passwords', 'min_length'])
 
 print '-' * 40
 
-gp = Policy()
-gp.load('config/groups.conf')
+gp = Policy('config/groups.conf')
 gp.print_all()
 
 print '-' * 40

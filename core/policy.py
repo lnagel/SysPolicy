@@ -18,10 +18,10 @@ class Policy(Config):
                 val = defval
             elif type(val) is dict and type(defval) is dict:
                 val = merge_into(copy.deepcopy(defval), val)
-                
+        
         return val
 
-        
+
 def merge_into(base, overlay):
     #print "merge_into(", base, ",", overlay, ")"
     for key, item in overlay.items():
@@ -29,5 +29,5 @@ def merge_into(base, overlay):
             merge_into(base[key], item)
         else:
             base[key] = item
-            
+        
     return base
