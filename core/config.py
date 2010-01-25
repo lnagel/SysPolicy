@@ -6,10 +6,11 @@ import yaml
 DEFAULT = "_default_"
 
 class Config:
-    def __init__(self,  source = None):
+    def __init__(self,  source = None,  load = True):
         self.data = {}
         self.source = source
-        self.load()
+        if load and source:
+            self.load()
     
     def load(self, configfile = None):
         if configfile is None and self.source is not None:
