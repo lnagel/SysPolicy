@@ -57,6 +57,10 @@ class Config:
         return None
 
     get = get_branch
+    
+    def compare_to(self,  other_config):
+        if isinstance(other_config,  Config):
+            return compare_trees(self.data,  other_config.data)
 
 
 def compare_trees(a,  b):
