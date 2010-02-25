@@ -58,6 +58,21 @@ class Config:
 
     get = get_branch
     
+    def set(self, path, value):
+        tpath = list(path)
+        if type(path) is list:
+            element = tpath.pop()
+            branch = self.data
+            
+            for node in tpath:
+                if node not in branch or type(branch[node]) is not dict:
+                    branch[node] = {}
+                branch = branch[node]
+                    
+            branch[element] = value
+            return True
+        return False            
+    
     def compare_to(self,  other_config):
         if isinstance(other_config,  Config):
             return compare_trees(self.data,  other_config.data)
