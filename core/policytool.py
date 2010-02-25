@@ -20,6 +20,14 @@ class PolicyTool:
                 self.state[type].save()
         self.module = {}
     
+    def set_state(self, type, path, value):
+        if type in self.state:
+            self.state[type].set(path, value)
+    
+    def save_state(self):
+        for type, state in self.state.items():
+            state.save()
+    
     def add_module(self,  module):
         if isinstance(module, Module):
             print module,  "is a module!"
