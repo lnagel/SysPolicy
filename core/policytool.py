@@ -36,5 +36,22 @@ class PolicyTool:
             print "Registered handler: policy",  policy_type,  "attribute",  attribute,  "to",  module
         else:
             raise Exception("Handler has already been set for policy '" + policy_type + "' attribute '" + attribute + "'")
+    
+    def get_policy_diff(self):
+        diff = {}
+        for type in self.policy:
+            diff[type] = self.policy[type].compare_to(self.state[type])
+        return diff
+    
+    def get_policy_updates(self):
+        diff = self.get_policy_diff()
+        for type, policy in diff.items():
+            if type in self.handler:
+                for group_name,  group in policy.items():
+                    for attribute, value in group.items():
+                        if attribute in self.handler[type]:
+                            print "Found a handler for", type, "->", group_name, "->", attribute, ":", self.handler[type][attribute]
+                        else:
+                            print "Didn't find a handler for", type, "->", group_name, "->", attribute
 
 
