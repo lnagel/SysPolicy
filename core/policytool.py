@@ -19,6 +19,7 @@ class PolicyTool:
                 self.state[type] = Policy(self.conf.get(['general', 'state-path'])+'/'+file,  False)
                 self.state[type].save()
         self.module = {}
+        self.changesets = []
     
     def set_state(self, type, path, value):
         if type in self.state:
@@ -59,6 +60,9 @@ class PolicyTool:
                     for attribute, value in group.items():
                         if attribute in self.handler[type]:
                             print "Found a handler for", type, "->", group_name, "->", attribute, ":", self.handler[type][attribute]
+                            cs = self.handler[type][attribute].check_diff(policy, self.state[type],  [group_name,  attribute],  value)
+                            if cs is not None:
+                                self.changesets.push(cs)
                         else:
                             print "Didn't find a handler for", type, "->", group_name, "->", attribute
 
