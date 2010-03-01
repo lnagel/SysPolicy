@@ -6,6 +6,10 @@ import yaml
 
 DEFAULT = "_default_"
 
+CONFIG_ADDED = 1
+CONFIG_CHANGED = 2
+CONFIG_REMOVED = 3
+
 class Config:
     def __init__(self,  source = None,  load = True):
         self.data = {}
@@ -98,3 +102,12 @@ def compare_trees(a,  b):
         elif type(a[key]) is not type(b[key]) or a[key] is not b[key]:
             r[key] = copy.deepcopy(a[key])
     return r
+
+def diff_type(a,  b,  path):
+    a_branch = a.get_branch(path)
+    b_branch = b.get_branch(path)
+    if a is None:
+        return CONFIG_REMOVED
+    elif b is None:
+        return CONFIG_ADDED
+    return CONFIG_CHANGED
