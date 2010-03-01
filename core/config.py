@@ -50,15 +50,7 @@ class Config:
             return {}
     
     def get_branch(self, path = []):
-        if type(path) is list:
-            branch = self.data
-            for node in path:
-                if node in branch:
-                    branch = branch[node]
-                else:
-                    return None
-            return branch
-        return None
+        return walk(self.data, path)
 
     get = get_branch
     
@@ -82,6 +74,17 @@ class Config:
             return compare_trees(self.data,  other_config.data)
 
 
+def walk(tree, path = []):
+    if type(path) is list:
+        branch = tree
+        for node in path:
+            if type(branch) is dict and node in branch:
+                branch = branch[node]
+            else:
+                return None
+        return branch
+    return None
+
 def compare_trees(a,  b):
     r = {}
     ak = set(a.keys())
@@ -104,10 +107,10 @@ def compare_trees(a,  b):
     return r
 
 def diff_type(a,  b,  path):
-    a_branch = a.get_branch(path)
-    b_branch = b.get_branch(path)
-    if a is None:
+    a_branch = walk(a, path)
+    b_branch = walk(b, path)
+    if a_branch is None:
         return CONFIG_REMOVED
-    elif b is None:
+    elif b_branch is None:
         return CONFIG_ADDED
     return CONFIG_CHANGED
