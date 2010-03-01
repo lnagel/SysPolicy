@@ -14,9 +14,16 @@ class Module:
             operation = config.diff_type(policy,  state,  path)
             
             if group == config.DEFAULT:
-                print operation, "default setting:", attribute, "=", value
+                print "assign default setting:", attribute, "=", value
             else:
-                print operation, "group setting", attribute, "=", value
+                if operation == config.CONFIG_ADDED:
+                    print "new", 
+                elif operation == config.CONFIG_CHANGED:
+                    print "changed", 
+                elif operation == config.CONFIG_REMOVED:
+                    print "removed", 
+                
+                print "group setting:", attribute, "=", value
             
         
         return None
