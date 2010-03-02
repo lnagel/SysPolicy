@@ -66,5 +66,6 @@ class PolicyTool:
                         else:
                             print "Didn't find a handler for", type, "->", group_name, "->", attribute
                         print "-" * 40
+        return self.changesets
 
 
