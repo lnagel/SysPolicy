@@ -46,3 +46,6 @@ class ChangeSet:
         self.check_state()
         return self.state
     
+    def append(self, change):
+        self.changes.append(change)
+    
