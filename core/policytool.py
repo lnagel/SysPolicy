@@ -62,7 +62,7 @@ class PolicyTool:
                             print "Found a handler for", type, "->", group_name, "->", attribute, ":", self.handler[type][attribute]
                             cs = self.handler[type][attribute].check_diff(policy, self.state[type],  [group_name,  attribute],  value)
                             if cs is not None:
-                                self.changesets.push(cs)
+                                self.changesets.append(cs)
                         else:
                             print "Didn't find a handler for", type, "->", group_name, "->", attribute
                         print "-" * 40
