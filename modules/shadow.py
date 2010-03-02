@@ -1,6 +1,7 @@
 
 import pwd,  grp
 from module import Module
+from core.change import Change, ChangeSet
 
 class Shadow(Module):
     def __init__(self):
@@ -10,3 +11,9 @@ class Shadow(Module):
     
     def list_groups(self):
         return grp.getgrall()
+    
+    def set_default(self, attribute,  value):
+        print "Setting new default in the Shadow module", attribute, "=", value
+        cs = ChangeSet()
+        cs.append(Change("shadow", "set_default", {attribute: value}))
+        return cs
