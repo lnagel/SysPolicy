@@ -12,18 +12,34 @@ class Module:
             group = path[0]
             attribute = path[1]
             operation = config.diff_type(policy,  state,  path)
+            cs = None
             
             if group == config.DEFAULT:
                 print "assign default setting:", attribute, "=", value
+                cs = self.set_default(attribute, value)
             else:
                 if operation == config.CONFIG_ADDED:
-                    print "new", 
+                    print "new", "group setting:", attribute, "=", value
+                    cs =self.new_attribute(group, attribute, value)
                 elif operation == config.CONFIG_CHANGED:
-                    print "changed", 
+                    print "changed", "group setting:", attribute, "=", value
+                    cs = self.set_attribute(group, attribute, value)
                 elif operation == config.CONFIG_REMOVED:
-                    print "removed", 
-                
-                print "group setting:", attribute, "=", value
-            
+                    print "removed", "group setting:", attribute, "=", value
+                    cs = self.rem_attribute(group, attribute)
         
+        return cs
+
+    def set_default(self, attribute, value):
         return None
+    
+    def  new_attribute(self, group, attribute, value):
+        return self.set_attribute(group, attribute, value)
+    
+    def set_attribute(self, group, attribute, value):
+        return None
+    
+    def rem_attribute(self, group, attribute):
+        return None
+    
+    
