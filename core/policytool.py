@@ -84,6 +84,9 @@ class PolicyTool:
         with self.cs_mlock:
             cs_lock = self.cs_locks[changeset]
         return cs_lock
+    
+    def get_module_lock(self,  module_name):
+        return self.module_locks[module_name]
 
     def add_changeset(self,  changeset):
         with self.cs_mlock:
