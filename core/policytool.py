@@ -7,6 +7,7 @@ from modules import Module
 from core.worker import Worker
 import core.change
 import threading
+import time
 
 class PolicyTool:
     def __init__(self,  configfile):
@@ -95,5 +96,7 @@ class PolicyTool:
                 with self.cs_locks[cs]:
                     if cs.state == core.change.STATE_ACCEPTED:
                         self.worker.queue.put(cs)
+                        print "Adding ChangeSet", cs, "to the Worker's queue"
+                        time.sleep(1)
 
 
