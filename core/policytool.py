@@ -5,6 +5,7 @@ from config import Config
 from policy import Policy
 from modules import Module
 from core.worker import Worker
+import core.change
 import threading
 
 class PolicyTool:
@@ -81,5 +82,12 @@ class PolicyTool:
         with self.cs_mlock:
             self.changesets.append(changeset)
             self.cs_locks[changeset] = threading.Lock()
+    
+    def enqueue_changesets(self):
+        with self.cs_mlock:
+            for cs in self.changesets:
+                with self.cs_locks[cs]:
+                    if cs.state == core.change.STATE_ACCEPTED:
+                        self.worker.queue.put(cs)
 
 

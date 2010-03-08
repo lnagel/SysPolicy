@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from core import PolicyTool
+import core.change
 from modules.shadow import Shadow
 import yaml
+import time
 
 pt = PolicyTool('config/main.conf')
 
@@ -19,7 +21,14 @@ print yaml.dump(pt.state)
 pt.save_state()
 
 print "------- ChangeSets -------"
-for cs in pt.changesets:
-    print yaml.dump(cs)
-    print "------"
+with pt.cs_mlock:
+    for cs in pt.changesets:
+        with pt.cs_locks[cs]:
+            cs.set_state(core.change.STATE_ACCEPTED)
+            print yaml.dump(cs)
+        print "------"
+
+pt.enqueue_changesets()
+
+time.sleep(2)
 
