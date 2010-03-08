@@ -4,6 +4,7 @@
 from config import Config
 from policy import Policy
 from modules import Module
+from core.worker import Worker
 import threading
 
 class PolicyTool:
@@ -24,6 +25,9 @@ class PolicyTool:
         self.changesets = []
         self.cs_mlock = threading.Lock()
         self.cs_locks = {}
+        
+        self.worker = Worker()
+        self.worker.start()
     
     def set_state(self, type, path, value):
         if type in self.state:
