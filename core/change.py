@@ -9,6 +9,22 @@ STATE_IGNORED = 4
 STATE_COMPLETED = 9
 STATE_FAILED = 10
 
+_state_strings = {
+    STATE_UNKNOWN: 'unknown', 
+    STATE_PROPOSED: 'proposed', 
+    STATE_ACCEPTED: 'accepted', 
+    STATE_REJECTED: 'rejected', 
+    STATE_IGNORED: 'ignored', 
+    STATE_COMPLETED: 'completed', 
+    STATE_FAILED: 'failed'
+}
+
+def state_string(state):
+    if state in _state_strings:
+        return _state_strings[state]
+    else:
+        return ''
+
 class Change:
     def __init__(self,  subsystem,  operation,  parameters):
         self.subsystem = subsystem
@@ -28,12 +44,12 @@ class ChangeSet:
                     change.state = state
                 self.state = state
         elif self.state == STATE_ACCEPTED:
-            if state in [STATE_COMPLETED,  STATE_FAILED]:
+            if self.state in [STATE_COMPLETED,  STATE_FAILED]:
                 self.state = state
         return (self.state == state)
     
     def check_state(self):
-        if state == STATE_ACCEPTED:
+        if self.state == STATE_ACCEPTED:
             for change in self.changes:
                 if change.state == STATE_ACCEPTED:
                     return
