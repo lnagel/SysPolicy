@@ -1,5 +1,5 @@
 
-
+import core.change
 import threading
 from Queue import Queue
 
@@ -17,4 +17,12 @@ class Worker(threading.Thread):
             cs = self.queue.get()
             with self.pt.get_cs_lock(cs):
                 print "Worker processing ChangeSet", cs
+                for c in cs.changes:
+                    with self.pt.get_module_lock(c.subsystem):
+                        module = self.pt.module[c.subsystem]
+                        print "Worker processing Change", c, "with module", module.name, 
+                        c.state = module.perform_change(c)
+                        print "=>", core.change.state_string(c.state)
+                print "This ChangeSet =>", core.change.state_string(cs.get_state())
+                print
             self.queue.task_done()
