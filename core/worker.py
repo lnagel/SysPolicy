@@ -1,7 +1,7 @@
 
 
 import threading
-import Queue
+from Queue import Queue
 
 class Worker(threading.Thread):
     def __init__(self):
