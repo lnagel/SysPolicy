@@ -1,5 +1,6 @@
 
 import core.config as config
+import core.change
 
 class Module:
     def __init__(self):
@@ -41,5 +42,8 @@ class Module:
     
     def rem_attribute(self, group, attribute):
         return None
+    
+    def perform_change(self, change):
+        return core.change.STATE_IGNORED
     
     
