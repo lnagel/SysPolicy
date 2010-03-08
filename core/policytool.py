@@ -27,7 +27,7 @@ class PolicyTool:
         self.cs_mlock = threading.Lock()
         self.cs_locks = {}
         
-        self.worker = Worker()
+        self.worker = Worker(self)
         self.worker.start()
     
     def set_state(self, type, path, value):
@@ -77,6 +77,12 @@ class PolicyTool:
                             print "Didn't find a handler for", type, "->", group_name, "->", attribute
                         print "-" * 40
         return self.changesets
+    
+    def get_cs_lock(self,  changeset):
+        cs_lock = None
+        with self.cs_mlock:
+            cs_lock = self.cs_locks[changeset]
+        return cs_lock
 
     def add_changeset(self,  changeset):
         with self.cs_mlock:
