@@ -33,9 +33,14 @@ class Change:
         self.state = STATE_PROPOSED
 
 class ChangeSet:
-    def __init__(self):
+    def __init__(self, changes = []):
         self.changes = []
         self.state = STATE_PROPOSED
+        if changes is not None:
+            if type(changes) is list:
+                self.changes.extend(changes)
+            elif isinstance(changes, Change):
+                self.changes.append(changes)
     
     def set_state(self,  state):
         if self.state == STATE_PROPOSED:
