@@ -11,6 +11,7 @@ class Module:
                             config.CONFIG_CHANGED: self.pol_set_attribute,
                             config.CONFIG_REMOVED: self.pol_rem_attribute
                         }
+        self.change_operations = {}
 
     def pol_check_diff(self, policy,  state, path, value):
         print "pol_check_diff for",  path, ",", value
@@ -41,6 +42,9 @@ class Module:
         return None
     
     def perform_change(self, change):
-        return core.change.STATE_IGNORED
+        if change.operation in self.change_operations:
+            return self.change_operations[change.operation](change)
+        else:
+            return core.change.STATE_IGNORED
     
     
