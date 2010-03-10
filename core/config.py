@@ -99,10 +99,10 @@ def compare_trees(a,  b):
             diff = compare_trees(a[key],  b[key])
             if diff:
                 r[key] = diff
-        if type(a[key]) is list and type(b[key]) is list:
+        elif type(a[key]) is list and type(b[key]) is list:
             if set(a[key]).symmetric_difference(set(b[key])):
                 r[key] = copy.deepcopy(a[key])
-        elif type(a[key]) is not type(b[key]) or a[key] is not b[key]:
+        elif type(a[key]) is not type(b[key]) or a[key] != b[key]:
             r[key] = copy.deepcopy(a[key])
     return r
 

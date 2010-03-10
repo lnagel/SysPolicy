@@ -64,6 +64,7 @@ class PolicyTool:
     
     def get_policy_updates(self):
         diff = self.get_policy_diff()
+        print "Diff:", diff
         for type, policy in diff.items():
             if type in self.handler:
                 for group_name,  group in policy.items():
