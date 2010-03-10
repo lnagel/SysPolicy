@@ -6,6 +6,11 @@ class Module:
     def __init__(self):
         self.name = "generic"
         self.handled_attributes = {}
+        self.diff_operation_handlers = {
+                            config.CONFIG_ADDED: self.pol_new_attribute,
+                            config.CONFIG_CHANGED: self.pol_set_attribute,
+                            config.CONFIG_REMOVED: self.pol_rem_attribute
+                        }
 
     def pol_check_diff(self, policy,  state, path, value):
         print "pol_check_diff for",  path, ",", value
@@ -18,16 +23,8 @@ class Module:
             if group == config.DEFAULT:
                 print "assign default setting:", attribute, "=", value
                 cs = self.pol_set_default(attribute, value)
-            else:
-                if operation == config.CONFIG_ADDED:
-                    print "new", "group setting:", attribute, "=", value
-                    cs =self.pol_new_attribute(group, attribute, value)
-                elif operation == config.CONFIG_CHANGED:
-                    print "changed", "group setting:", attribute, "=", value
-                    cs = self.pol_set_attribute(group, attribute, value)
-                elif operation == config.CONFIG_REMOVED:
-                    print "removed", "group setting:", attribute, "=", value
-                    cs = self.pol_rem_attribute(group, attribute)
+            elif operation in self.diff_operation_handlers:
+                cs = self.diff_operation_handlers[operation](group, attribute, value)
         
         return cs
 
@@ -40,7 +37,7 @@ class Module:
     def pol_set_attribute(self, group, attribute, value):
         return None
     
-    def pol_rem_attribute(self, group, attribute):
+    def pol_rem_attribute(self, group, attribute, value = None):
         return None
     
     def perform_change(self, change):
