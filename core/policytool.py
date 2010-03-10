@@ -70,7 +70,7 @@ class PolicyTool:
                     for attribute, value in group.items():
                         if attribute in self.handler[type]:
                             print "Found a handler for", type, "->", group_name, "->", attribute, ":", self.handler[type][attribute]
-                            cs = self.handler[type][attribute].check_diff(policy, self.state[type],  [group_name,  attribute],  value)
+                            cs = self.handler[type][attribute].pol_check_diff(policy, self.state[type],  [group_name,  attribute],  value)
                             if cs is not None:
                                 self.add_changeset(cs)
                         else:
