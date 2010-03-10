@@ -33,7 +33,7 @@ class Change:
         self.state = STATE_PROPOSED
 
 class ChangeSet:
-    def __init__(self, changes = []):
+    def __init__(self, changes = None):
         self.changes = []
         self.state = STATE_PROPOSED
         if changes is not None:
