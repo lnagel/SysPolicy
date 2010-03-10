@@ -6,7 +6,7 @@ class Module:
     def __init__(self):
         self.name = "generic"
         self.handled_attributes = {}
-        self.diff_operation_handlers = {
+        self.diff_operations = {
                             config.CONFIG_ADDED: self.pol_new_attribute,
                             config.CONFIG_CHANGED: self.pol_set_attribute,
                             config.CONFIG_REMOVED: self.pol_rem_attribute
@@ -23,8 +23,8 @@ class Module:
             if group == config.DEFAULT:
                 print "assign default setting:", attribute, "=", value
                 cs = self.pol_set_default(attribute, value)
-            elif operation in self.diff_operation_handlers:
-                cs = self.diff_operation_handlers[operation](group, attribute, value)
+            elif operation in self.diff_operations:
+                cs = self.diff_operations[operation](group, attribute, value)
         
         return cs
 
