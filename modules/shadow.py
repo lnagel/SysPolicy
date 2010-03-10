@@ -15,3 +15,7 @@ class Shadow(Module):
     def pol_set_default(self, attribute,  value):
         print "Setting new default in the Shadow module", attribute, "=", value
         return ChangeSet(Change("shadow", "set_default", {attribute: value}))
+    
+    def pol_set_attribute(self, group, attribute, value):
+        print "Setting attribute value in the Shadow module", attribute, "=", value
+        return ChangeSet(Change("shadow", "set_attribute", {'group': group, attribute: value}))
