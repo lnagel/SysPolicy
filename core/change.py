@@ -6,6 +6,7 @@ STATE_PROPOSED = 1
 STATE_ACCEPTED = 2
 STATE_REJECTED = 3
 STATE_IGNORED = 4
+STATE_NOT_HANDLED = 8
 STATE_COMPLETED = 9
 STATE_FAILED = 10
 
@@ -15,6 +16,7 @@ _state_strings = {
     STATE_ACCEPTED: 'accepted', 
     STATE_REJECTED: 'rejected', 
     STATE_IGNORED: 'ignored', 
+    STATE_NOT_HANDLED: 'not handled', 
     STATE_COMPLETED: 'completed', 
     STATE_FAILED: 'failed'
 }
@@ -58,7 +60,7 @@ class ChangeSet:
             for change in self.changes:
                 if change.state == STATE_ACCEPTED:
                     return
-                elif change.state != STATE_COMPLETED:
+                elif change.state not in [STATE_COMPLETED, STATE_NOT_HANDLED]:
                     self.state = STATE_FAILED
                     return
             self.state = STATE_COMPLETED

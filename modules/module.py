@@ -55,6 +55,6 @@ class Module:
         if change.operation in self.change_operations:
             return self.change_operations[change.operation](change)
         else:
-            return core.change.STATE_IGNORED
+            return core.change.STATE_NOT_HANDLED
     
     
