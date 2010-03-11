@@ -4,22 +4,20 @@
 from core import PolicyTool
 import core.change
 from modules.shadow import Shadow
+from modules.state import State
 import yaml
 import time
 
 pt = PolicyTool('config/main.conf')
 
 pt.add_module(Shadow())
+pt.add_module(State())
 
 print yaml.dump(pt.get_policy_diff())
 
 pt.get_policy_updates()
 
-pt.set_state('groups', ['_default_', 'uid_max'], 2000)
-pt.set_state('groups', ['www-users', 'userquota', '/srv'], '100M')
-
 print yaml.dump(pt.state)
-pt.save_state()
 
 print "------- ChangeSets -------"
 with pt.cs_mlock:
@@ -32,4 +30,5 @@ with pt.cs_mlock:
 pt.enqueue_changesets()
 
 time.sleep(2)
+pt.save_state()
 
