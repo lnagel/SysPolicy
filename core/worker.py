@@ -23,6 +23,8 @@ class Worker(threading.Thread):
                         print "Worker processing Change", c, "with module", module.name, 
                         c.state = module.perform_change(c)
                         print "=>", core.change.state_string(c.state)
+                        if c.state == core.change.STATE_FAILED:
+                            break
                 print "This ChangeSet =>", core.change.state_string(cs.get_state())
                 print
             self.queue.task_done()
