@@ -16,8 +16,12 @@ class Module:
         self.change_operations = {}
 
     def pol_check_diff(self, policy, operation, path, value):
-        print "pol_check_diff for",  path, ",", value
+        print "pol_check_diff in:", policy, "operation:", operation, "for:",  path, ",", value
         cs = None
+        state_update = Change("state", "set_state", 
+                             {"policy": policy, "path": path,
+                             "value": value, "diff_type": operation})
+     
         if len(path) >= 2:
             group = path[0]
             attribute = path[1]
@@ -29,9 +33,9 @@ class Module:
                 cs = self.diff_operations[operation](group, attribute, value)
         
         if cs is not None:
-            cs.append(Change("state", "set_state", 
-                             {"policy": policy, "path": path,
-                             "value": value, "diff_type": operation}))
+            cs.append(state_update)
+        else:
+            cs = ChangeSet(state_update)
         
         return cs
 
