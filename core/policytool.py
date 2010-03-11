@@ -10,16 +10,16 @@ import threading
 
 class PolicyTool:
     def __init__(self,  configfile):
-        self.conf = Config(configfile)
+        self.conf = Config("main_config", configfile)
         self.policy = {}
         self.state = {}
         self.handler = {}
         for type,  file in self.conf.get(['policy']).items():
-            self.policy[type] = Policy(self.conf.get(['general', 'policy-path'])+'/'+file)
+            self.policy[type] = Policy(type, self.conf.get(['general', 'policy-path'])+'/'+file)
             try:
-                self.state[type] = Policy(self.conf.get(['general', 'state-path'])+'/'+file)
+                self.state[type] = Policy(type, self.conf.get(['general', 'state-path'])+'/'+file)
             except IOError:
-                self.state[type] = Policy(self.conf.get(['general', 'state-path'])+'/'+file,  False)
+                self.state[type] = Policy(type, self.conf.get(['general', 'state-path'])+'/'+file,  False)
                 self.state[type].save()
         self.module = {}
         self.module_locks = {}
@@ -41,11 +41,15 @@ class PolicyTool:
     def add_module(self,  module):
         if isinstance(module, Module):
             print module,  "is a module!"
-            self.module[module.name] = module
-            self.module_locks[module.name] = threading.Lock()
-            for policy_type,  attributes in module.handled_attributes.items():
-                for attribute in attributes:
-                    self.register_handler(policy_type,  attribute,  module)
+            if module.pt is None:
+                module.pt = self
+                self.module[module.name] = module
+                self.module_locks[module.name] = threading.Lock()
+                for policy_type,  attributes in module.handled_attributes.items():
+                    for attribute in attributes:
+                        self.register_handler(policy_type,  attribute,  module)
+            else:
+                print module, "has already been registered with", module.pt
     
     def register_handler(self,  policy_type,  attribute,  module):
         if policy_type not in self.handler:
