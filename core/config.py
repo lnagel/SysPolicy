@@ -66,9 +66,13 @@ class Config:
                     branch[node] = {}
                 branch = branch[node]
                     
-            branch[element] = value
+            if value is not None:
+                branch[element] = value
+            elif element in branch:
+                del branch[element]
+            
             return True
-        return False            
+        return False
     
     def compare_to(self,  other_config):
         if isinstance(other_config,  Config):
