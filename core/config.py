@@ -11,7 +11,8 @@ CONFIG_CHANGED = 2
 CONFIG_REMOVED = 3
 
 class Config:
-    def __init__(self,  source = None,  load = True):
+    def __init__(self, name, source = None,  load = True):
+        self.name = name
         self.data = {}
         self.source = source
         if load and source:
