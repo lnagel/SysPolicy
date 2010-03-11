@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import config
 from config import Config
 from policy import Policy
 from modules import Module
@@ -75,8 +76,10 @@ class PolicyTool:
                     for attribute, value in group.items():
                         if attribute in self.handler[type]:
                             h = self.handler[type][attribute]
-                            print "Found a handler for", type, "->", group_name, "->", attribute, ":", h
-                            cs = h.pol_check_diff(policy, self.state[type],  [group_name,  attribute],  value)
+                            path = [group_name,  attribute]
+                            print "Found a handler for", type, "->", path, ":", h
+                            operation = config.diff_type(policy, self.state[type], path)
+                            cs = h.pol_check_diff(self.policy[type].name, operation, path, value)
                             if cs is not None:
                                 self.add_changeset(cs)
                         else:

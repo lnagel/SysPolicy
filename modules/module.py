@@ -15,13 +15,12 @@ class Module:
                         }
         self.change_operations = {}
 
-    def pol_check_diff(self, policy,  state, path, value):
+    def pol_check_diff(self, policy, operation, path, value):
         print "pol_check_diff for",  path, ",", value
         cs = None
         if len(path) >= 2:
             group = path[0]
             attribute = path[1]
-            operation = config.diff_type(policy,  state,  path)
             
             if group == config.DEFAULT:
                 print "assign default setting:", attribute, "=", value
@@ -30,7 +29,9 @@ class Module:
                 cs = self.diff_operations[operation](group, attribute, value)
         
         if cs is not None:
-            cs.append(Change("state", "set_state", {"path": path, "value": value, "diff_type": operation}))
+            cs.append(Change("state", "set_state", 
+                             {"policy": policy, "path": path,
+                             "value": value, "diff_type": operation}))
         
         return cs
 
