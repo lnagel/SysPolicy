@@ -1,5 +1,5 @@
 
-import core.config as config
+import core.config
 import core.change
 from core.change import Change, ChangeSet
 
@@ -9,9 +9,9 @@ class Module:
         self.handled_attributes = {}
         self.pt = None
         self.diff_operations = {
-                            config.CONFIG_ADDED: self.pol_new_attribute,
-                            config.CONFIG_CHANGED: self.pol_set_attribute,
-                            config.CONFIG_REMOVED: self.pol_rem_attribute
+                            core.config.CONFIG_ADDED: self.pol_new_attribute,
+                            core.config.CONFIG_CHANGED: self.pol_set_attribute,
+                            core.config.CONFIG_REMOVED: self.pol_rem_attribute
                         }
         self.change_operations = {}
 
@@ -26,7 +26,7 @@ class Module:
             group = path[0]
             attribute = path[1]
             
-            if group == config.DEFAULT:
+            if group == core.config.DEFAULT:
                 print "assign default setting:", attribute, "=", value
                 cs = self.pol_set_default(attribute, value)
             elif operation in self.diff_operations:
