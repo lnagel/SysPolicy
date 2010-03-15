@@ -4,7 +4,7 @@
 import config
 from config import Config
 from policy import Policy
-from modules import Module
+from modules.module import Module
 from core.worker import Worker
 import core.change
 import threading
