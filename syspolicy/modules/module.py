@@ -1,7 +1,7 @@
 
-import core.config
-import core.change
-from core.change import Change, ChangeSet
+import syspolicy.core.config
+import syspolicy.core.change
+from syspolicy.core.change import Change, ChangeSet
 
 class Module:
     def __init__(self):
@@ -9,9 +9,9 @@ class Module:
         self.handled_attributes = {}
         self.pt = None
         self.diff_operations = {
-                            core.config.CONFIG_ADDED: self.pol_new_attribute,
-                            core.config.CONFIG_CHANGED: self.pol_set_attribute,
-                            core.config.CONFIG_REMOVED: self.pol_rem_attribute
+                            syspolicy.core.config.CONFIG_ADDED: self.pol_new_attribute,
+                            syspolicy.core.config.CONFIG_CHANGED: self.pol_set_attribute,
+                            syspolicy.core.config.CONFIG_REMOVED: self.pol_rem_attribute
                         }
         self.change_operations = {}
 
@@ -26,7 +26,7 @@ class Module:
             group = path[0]
             attribute = path[1]
             
-            if group == core.config.DEFAULT:
+            if group == syspolicy.core.config.DEFAULT:
                 print "assign default setting:", attribute, "=", value
                 cs = self.pol_set_default(attribute, value)
             elif operation in self.diff_operations:
@@ -55,6 +55,6 @@ class Module:
         if change.operation in self.change_operations:
             return self.change_operations[change.operation](change)
         else:
-            return core.change.STATE_NOT_HANDLED
+            return syspolicy.core.change.STATE_NOT_HANDLED
     
     

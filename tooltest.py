@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from core.policytool import PolicyTool
-import core.change
-from modules.shadow import Shadow
-from modules.state import State
+from syspolicy.core.policytool import PolicyTool
+from syspolicy.modules.shadow import Shadow
+from syspolicy.modules.state import State
 import yaml
 import time
 

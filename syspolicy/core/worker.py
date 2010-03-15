@@ -1,7 +1,7 @@
 
-import core.change
 import threading
 from Queue import Queue
+import syspolicy.core.change
 
 class Worker(threading.Thread):
     def __init__(self, policytool):
@@ -22,9 +22,9 @@ class Worker(threading.Thread):
                         module = self.pt.module[c.subsystem]
                         print "Worker processing Change", c, "with module", module.name, 
                         c.state = module.perform_change(c)
-                        print "=>", core.change.state_string(c.state)
-                        if c.state == core.change.STATE_FAILED:
+                        print "=>", syspolicy.core.change.state_string(c.state)
+                        if c.state == syspolicy.core.change.STATE_FAILED:
                             break
-                print "This ChangeSet =>", core.change.state_string(cs.get_state())
+                print "This ChangeSet =>", syspolicy.core.change.state_string(cs.get_state())
                 print
             self.queue.task_done()

@@ -1,8 +1,8 @@
 
 import pwd,  grp
-from module import Module
-import core.change
-from core.change import Change, ChangeSet
+import syspolicy.core.change
+from syspolicy.core.change import Change, ChangeSet
+from syspolicy.modules.module import Module
 
 class Shadow(Module):
     def __init__(self):
@@ -23,4 +23,4 @@ class Shadow(Module):
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, attribute: value}))
 
     def set_default(self, change):
-        return core.change.STATE_COMPLETED
+        return syspolicy.core.change.STATE_COMPLETED

@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import config
-from config import Config
-from policy import Policy
-from modules.module import Module
-from core.worker import Worker
-import core.change
 import threading
+import syspolicy.core.change
+import syspolicy.core.config
+from syspolicy.core.config import Config
+from syspolicy.core.policy import Policy
+from syspolicy.core.worker import Worker
+from syspolicy.modules.module import Module
 
 class PolicyTool:
     def __init__(self,  configfile):

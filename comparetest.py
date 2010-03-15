@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from core.config import compare_trees
+from syspolicy.core.config import compare_trees
 import yaml
 
 a = {'aaa': 'hehehe',  'bbb': 'asdf',  'tree': {'asd': 1, 'kekekk': 42},  'list': ['a'], 'empty': None}
