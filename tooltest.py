@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import syspolicy.core.change
 from syspolicy.core.policytool import PolicyTool
 from syspolicy.modules.shadow import Shadow
 from syspolicy.modules.state import State
@@ -22,7 +23,7 @@ print "------- ChangeSets -------"
 with pt.cs_mlock:
     for cs in pt.changesets:
         with pt.cs_locks[cs]:
-            cs.set_state(core.change.STATE_ACCEPTED)
+            cs.set_state(syspolicy.core.change.STATE_ACCEPTED)
             print yaml.dump(cs)
         print "------"
 

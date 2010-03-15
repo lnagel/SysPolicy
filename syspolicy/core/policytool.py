@@ -78,7 +78,7 @@ class PolicyTool:
                             h = self.handler[type][attribute]
                             path = [group_name,  attribute]
                             print "Found a handler for", type, "->", path, ":", h
-                            operation = config.diff_type(policy, self.state[type], path)
+                            operation = syspolicy.core.config.diff_type(policy, self.state[type], path)
                             cs = h.pol_check_diff(self.policy[type].name, operation, path, value)
                             if cs is not None:
                                 self.add_changeset(cs)
@@ -105,6 +105,6 @@ class PolicyTool:
         with self.cs_mlock:
             for cs in self.changesets:
                 with self.cs_locks[cs]:
-                    if cs.state == core.change.STATE_ACCEPTED:
+                    if cs.state == syspolicy.core.change.STATE_ACCEPTED:
                         self.worker.queue.put(cs)
                         print "Adding ChangeSet", cs, "to the Worker's queue"

@@ -16,7 +16,7 @@ class State(Module):
         diff_type = change.parameters['diff_type']
         value = change.parameters['value']
         
-        if diff_type in [syspolicy.core.config.CONFIG_ADDED, core.config.CONFIG_CHANGED]:
+        if diff_type in [syspolicy.core.config.CONFIG_ADDED, syspolicy.core.config.CONFIG_CHANGED]:
             self.pt.set_state(policy, path, value)
             return syspolicy.core.change.STATE_COMPLETED
         elif diff_type in [syspolicy.core.config.CONFIG_REMOVED]:
