@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from syspolicy.core.policytool import PolicyTool
+from syspolicy.policytool import PolicyTool
 from syspolicy.modules.shadow import Shadow
 from syspolicy.modules.state import State
 import yaml

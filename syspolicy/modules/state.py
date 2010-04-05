@@ -1,7 +1,7 @@
 
-import syspolicy.core.config
-import syspolicy.core.change
-from syspolicy.core.change import Change, ChangeSet
+import syspolicy.config
+import syspolicy.change
+from syspolicy.change import Change, ChangeSet
 from syspolicy.modules.module import Module
 
 class State(Module):
@@ -16,11 +16,11 @@ class State(Module):
         diff_type = change.parameters['diff_type']
         value = change.parameters['value']
         
-        if diff_type in [syspolicy.core.config.CONFIG_ADDED, syspolicy.core.config.CONFIG_CHANGED]:
+        if diff_type in [syspolicy.config.CONFIG_ADDED, syspolicy.config.CONFIG_CHANGED]:
             self.pt.set_state(policy, path, value)
-            return syspolicy.core.change.STATE_COMPLETED
-        elif diff_type in [syspolicy.core.config.CONFIG_REMOVED]:
+            return syspolicy.change.STATE_COMPLETED
+        elif diff_type in [syspolicy.config.CONFIG_REMOVED]:
             self.pt.set_state(policy, path, None)
-            return syspolicy.core.change.STATE_COMPLETED
+            return syspolicy.change.STATE_COMPLETED
         
-        return syspolicy.core.change.STATE_FAILED
+        return syspolicy.change.STATE_FAILED

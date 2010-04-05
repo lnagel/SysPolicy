@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import threading
-import syspolicy.core.change
-import syspolicy.core.config
-from syspolicy.core.config import Config
-from syspolicy.core.policy import Policy
-from syspolicy.core.worker import Worker
+import syspolicy.change
+import syspolicy.config
+from syspolicy.config import Config
+from syspolicy.policy import Policy
+from syspolicy.worker import Worker
 from syspolicy.modules.module import Module
 
 class PolicyTool:
@@ -78,7 +78,7 @@ class PolicyTool:
                             h = self.handler[type][attribute]
                             path = [group_name,  attribute]
                             print "Found a handler for", type, "->", path, ":", h
-                            operation = syspolicy.core.config.diff_type(policy, self.state[type], path)
+                            operation = syspolicy.config.diff_type(policy, self.state[type], path)
                             cs = h.pol_check_diff(self.policy[type].name, operation, path, value)
                             if cs is not None:
                                 self.add_changeset(cs)
@@ -103,9 +103,9 @@ class PolicyTool:
     
     def accept_changeset(self, changeset, accepted = True):
         if accepted == True:
-            state = syspolicy.core.change.STATE_ACCEPTED
+            state = syspolicy.change.STATE_ACCEPTED
         else:
-            state = syspolicy.core.change.STATE_REJECTED
+            state = syspolicy.change.STATE_REJECTED
         
         if changeset in self.changesets:
             with self.cs_locks[changeset]:
@@ -115,6 +115,6 @@ class PolicyTool:
         with self.cs_mlock:
             for cs in self.changesets:
                 with self.cs_locks[cs]:
-                    if cs.state == syspolicy.core.change.STATE_ACCEPTED:
+                    if cs.state == syspolicy.change.STATE_ACCEPTED:
                         self.worker.queue.put(cs)
                         print "Adding ChangeSet", cs, "to the Worker's queue"

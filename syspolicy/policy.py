@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import copy
-from syspolicy.core.config import Config, DEFAULT
+from syspolicy.config import Config, DEFAULT
 
 class Policy(Config):
     

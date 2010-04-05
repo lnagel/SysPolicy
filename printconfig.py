@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from syspolicy.core.config import Config
-from syspolicy.core.policy import Policy
+from syspolicy.config import Config
+from syspolicy.policy import Policy
 
 print '-' * 40
 
