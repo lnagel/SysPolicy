@@ -25,6 +25,8 @@ class Config:
             cf = file(configfile, 'r')
             self.data = yaml.load(cf)
             cf.close()
+            if type(self.data) is not dict:
+                self.data = {}
             return True
         return False
     
