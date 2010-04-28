@@ -39,8 +39,7 @@ class PAM(Module):
         
         # TODO: Make this function work with more than one group per attribute
         if len(value) > 1:
-            print "Cannot handle more than 1 group per attribute yet"
-            return syspolicy.change.STATE_FAILED
+            raise Exception("Cannot handle more than 1 group the attribute " + attribute + " yet")
         
         if attribute == 'groups_allow':
             for group in value:
