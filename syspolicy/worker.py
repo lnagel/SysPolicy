@@ -21,7 +21,11 @@ class Worker(threading.Thread):
                     with self.pt.get_module_lock(c.subsystem):
                         module = self.pt.module[c.subsystem]
                         print "Worker processing Change", c, "with module", module.name, 
-                        c.state = module.perform_change(c)
+                        try:
+                            c.state = module.perform_change(c)
+                        except Exception as e:
+                            print "Worker encountered an exception while processing ChangeSet", cs, ":", e
+                            c.state = syspolicy.change.STATE_FAILED
                         print "=>", syspolicy.change.state_string(c.state)
                         if c.state == syspolicy.change.STATE_FAILED:
                             break

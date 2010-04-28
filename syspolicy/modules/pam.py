@@ -2,6 +2,7 @@
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
 from syspolicy.modules.module import Module
+import os
 
 class PAM(Module):
     def __init__(self):
@@ -33,6 +34,9 @@ class PAM(Module):
         configfile = self.pt.conf.get(['module-pam', 'pam-dir']) + '/' + service
         lines = []
         
+        if not os.access(configfile, os.F_OK):
+            raise Exception("PAM service config file '" + configfile + "' does not exist")
+        
         # TODO: Make this function work with more than one group per attribute
         if len(value) > 1:
             print "Cannot handle more than 1 group per attribute yet"
@@ -45,7 +49,10 @@ class PAM(Module):
             for group in value:
                 lines.append('auth requisite pam_succeed_if.so quiet_success user notingroup ' + group + "\n")
         
-        if self.append_lines_to_file(configfile, '^account', None, attribute, lines):
-            return syspolicy.change.STATE_COMPLETED
-        else:
+        try:
+            self.append_lines_to_file(configfile, '^account', None, attribute, lines)
+        except IOError:
             return syspolicy.change.STATE_FAILED
+
+        
+        return syspolicy.change.STATE_COMPLETED
