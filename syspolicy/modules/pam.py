@@ -18,7 +18,11 @@ class PAM(Module):
     def pol_set_attribute(self, group, attribute, value):
         print "Setting attribute value in the PAM module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
-
+    
+    def pol_rem_attribute(self, group, attribute, value = None):
+        if attribute in ['groups_allow',  'groups_deny',  'users_allow',  'users_deny']:
+            return self.pol_set_attribute(group, attribute, [])
+    
     def set_default(self, change):
         return syspolicy.change.STATE_COMPLETED
     
@@ -41,5 +45,7 @@ class PAM(Module):
             for group in value:
                 lines.append('auth requisite pam_succeed_if.so quiet_success user notingroup ' + group + "\n")
         
-        self.append_lines_to_file(configfile, '^account', None, attribute, lines)
-        return syspolicy.change.STATE_FAILED
+        if self.append_lines_to_file(configfile, '^account', None, attribute, lines):
+            return syspolicy.change.STATE_COMPLETED
+        else:
+            return syspolicy.change.STATE_FAILED

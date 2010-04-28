@@ -3,6 +3,9 @@ import syspolicy.config
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
 import re
+import os
+import os.path
+import tempfile
 
 class Module:
     def __init__(self):
@@ -69,8 +72,10 @@ class Module:
         tag = "SysPolicy module " + self.name + " -- " + id
         start_tag = "### BEGIN " + tag + " ###\n"
         end_tag = "### END " + tag + " ### \n"
-        lines.insert(0, start_tag)
-        lines.append(end_tag)
+        
+        if len(lines) > 0:
+            lines.insert(0, start_tag)
+            lines.append(end_tag)
         
         filter = False
         for line in orig_src:
@@ -105,8 +110,16 @@ class Module:
             print d, 
         print 40 * "-"
 
-        #new_file = open(new_filename, "w")
-        #new_file.writelines(lines)
+        basename = os.path.basename(configfile)
+        basedir = os.path.dirname(configfile)
         
+        temp_file = tempfile.NamedTemporaryFile(prefix='.'+basename+'.', suffix='.syspolicy', dir=basedir, delete=False)
+        temp_file.writelines(dst)
+        temp_file.close()
+        
+        os.rename(temp_file.name, configfile)
+        
+        return True
+    
 
     
