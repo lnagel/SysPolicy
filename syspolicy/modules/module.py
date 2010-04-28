@@ -81,11 +81,6 @@ class Module:
             if filter and re.search('^' + end_tag, line):
                 filter = False                
         
-        print
-        print orig_src
-        print id
-        print lines
-        
         if before is not None:
             for line in src:
                 if not inserted and re.search(before, line.rstrip("\r\n")):
@@ -104,9 +99,11 @@ class Module:
         if not inserted:
             dst.extend(lines)
         
+        print
         print 40 * "-"
         for d in dst:
             print d, 
+        print 40 * "-"
 
         #new_file = open(new_filename, "w")
         #new_file.writelines(lines)
