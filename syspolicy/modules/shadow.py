@@ -20,7 +20,7 @@ class Shadow(Module):
     
     def pol_set_attribute(self, group, attribute, value):
         print "Setting attribute value in the Shadow module", attribute, "=", value
-        return ChangeSet(Change(self.name, "set_attribute", {'group': group, attribute: value}))
+        return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
 
     def set_default(self, change):
         return syspolicy.change.STATE_COMPLETED
