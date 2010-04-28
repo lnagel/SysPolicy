@@ -86,16 +86,21 @@ class Module:
             if filter and re.search('^' + end_tag, line):
                 filter = False                
         
-        if before is not None:
+        seek_for_end = False
+        if before is not None or after is not None:
             for line in src:
-                if not inserted and re.search(before, line.rstrip("\r\n")):
+                if not seek_for_end and re.search('^### BEGIN', line.rstrip("\r\n")):
+                    seek_for_end = True
+                elif seek_for_end and re.search('^### END', line.rstrip("\r\n")):
+                    seek_for_end = False
+                
+                if before is not None and not seek_for_end and not inserted and re.search(before, line.rstrip("\r\n")):
                     dst.extend(lines)
                     inserted = True
+                
                 dst.append(line)
-        elif after is not None:
-            for line in src:
-                dst.append(line)
-                if not inserted and re.search(after, line.rstrip("\r\n")):
+                
+                if after is not None and not seek_for_end and not inserted and re.search(after, line.rstrip("\r\n")):
                     dst.extend(lines)
                     inserted = True
         else:
