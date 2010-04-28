@@ -8,9 +8,13 @@ import yaml
 from optparse import OptionParser
 
 parser = OptionParser()
+
 parser.add_option("-u", "--update",
                   action="store_true", dest="mode_update", default=False,
-                  help="check system for policy updates")
+                  help="check for policy updates")
+parser.add_option("-s", "--scan",
+                  action="store_true", dest="mode_scan", default=False,
+                  help="perform a full system scan to verify the policy")
 
 (options, args) = parser.parse_args()
 
