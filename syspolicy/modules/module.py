@@ -2,6 +2,7 @@
 import syspolicy.config
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
+import re
 
 class Module:
     def __init__(self):
@@ -57,4 +58,58 @@ class Module:
         else:
             return syspolicy.change.STATE_NOT_HANDLED
     
+    def append_lines_to_file(self, configfile, before, after, id, lines):
+        orig_file = open(configfile, "r")
+        orig_src = orig_file.readlines()
+        src = []
+        dst = []
+        orig_file.close()
+        inserted = False
+        
+        tag = "SysPolicy module " + self.name + " -- " + id
+        start_tag = "### BEGIN " + tag + " ###\n"
+        end_tag = "### END " + tag + " ### \n"
+        lines.insert(0, start_tag)
+        lines.append(end_tag)
+        
+        filter = False
+        for line in orig_src:
+            if re.search('^' + start_tag, line):
+                filter = True
+            if not filter:
+                src.append(line)
+            if filter and re.search('^' + end_tag, line):
+                filter = False                
+        
+        print
+        print orig_src
+        print id
+        print lines
+        
+        if before is not None:
+            for line in src:
+                if not inserted and re.search(before, line.rstrip("\r\n")):
+                    dst.extend(lines)
+                    inserted = True
+                dst.append(line)
+        elif after is not None:
+            for line in src:
+                dst.append(line)
+                if not inserted and re.search(after, line.rstrip("\r\n")):
+                    dst.extend(lines)
+                    inserted = True
+        else:
+            dst.extend(src)
+        
+        if not inserted:
+            dst.extend(lines)
+        
+        print 40 * "-"
+        for d in dst:
+            print d, 
+
+        #new_file = open(new_filename, "w")
+        #new_file.writelines(lines)
+        
+
     
