@@ -3,6 +3,7 @@
 
 from syspolicy.policytool import PolicyTool
 from syspolicy.modules.shadow import Shadow
+from syspolicy.modules.pam import PAM
 from syspolicy.modules.state import State
 import yaml
 from optparse import OptionParser
@@ -23,6 +24,7 @@ if options.mode_update:
     
     pt = PolicyTool('config/main.conf')
     pt.add_module(Shadow())
+    pt.add_module(PAM())
     pt.add_module(State())
     pt.get_policy_updates()
     
