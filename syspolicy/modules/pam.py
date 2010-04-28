@@ -38,15 +38,27 @@ class PAM(Module):
             raise Exception("PAM service config file '" + configfile + "' does not exist")
         
         # TODO: Make this function work with more than one group per attribute
-        if len(value) > 1:
+        if attribute in ['groups_allow', 'groups_deny'] and len(value) > 1:
             raise Exception("Cannot handle more than 1 group the attribute " + attribute + " yet")
+        
+        prefix = 'auth requisite pam_succeed_if.so quiet_success'
         
         if attribute == 'groups_allow':
             for group in value:
-                lines.append('auth requisite pam_succeed_if.so quiet_success user ingroup ' + group + "\n")
+                lines.append(prefix + ' user ingroup ' + group + "\n")
         elif attribute == 'groups_deny':
             for group in value:
-                lines.append('auth requisite pam_succeed_if.so quiet_success user notingroup ' + group + "\n")
+                lines.append(prefix + ' user notingroup ' + group + "\n")
+        elif attribute == 'users_allow':
+            if len(value) == 1:
+                lines.append(prefix + ' user = ' + value[0] + "\n")
+            elif len(value) > 1:
+                lines.append(prefix + ' user in ' + ':'.join(value) + "\n")
+        elif attribute == 'users_deny':
+            if len(value) == 1:
+                lines.append(prefix + ' user != ' + value[0] + "\n")
+            elif len(value) > 1:
+                lines.append(prefix + ' user notin ' + ':'.join(value) + "\n")
         
         try:
             self.append_lines_to_file(configfile, '^account', None, attribute, lines)
