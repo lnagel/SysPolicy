@@ -12,7 +12,6 @@ class Worker(threading.Thread):
         self.pt = policytool
     
     def run(self):
-        print "== Worker started =="
         while True:
             cs = self.queue.get()
             with self.pt.get_cs_lock(cs):
