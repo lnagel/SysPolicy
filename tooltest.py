@@ -6,7 +6,6 @@ from syspolicy.modules.shadow import Shadow
 from syspolicy.modules.pam import PAM
 from syspolicy.modules.state import State
 import yaml
-import time
 
 pt = PolicyTool('config/main.conf')
 
@@ -29,6 +28,6 @@ with pt.cs_mlock:
 
 pt.enqueue_changesets()
 
-time.sleep(2)
+pt.worker.queue.join()
 pt.save_state()
 
