@@ -5,6 +5,7 @@ from syspolicy.policytool import PolicyTool
 from syspolicy.modules.shadow import Shadow
 from syspolicy.modules.pam import PAM
 from syspolicy.modules.state import State
+from syspolicy.cli.prompt import confirm
 import yaml
 from optparse import OptionParser
 
@@ -32,7 +33,15 @@ if options.mode_update:
     with pt.cs_mlock:
         for cs in pt.changesets:
             print yaml.dump(cs)
+            if confirm("Approve this ChangeSet?"):
+                pt.accept_changeset(cs)
     
+    if len(pt.changesets) > 0 and confirm("Enqueue %d ChangeSets?" % len(pt.changesets)):
+        pt.enqueue_changesets()
+    else:
+        print "Nothing to do.."
+    
+    pt.worker.queue.join()
     pt.save_state()
 else:
     parser.print_help()
