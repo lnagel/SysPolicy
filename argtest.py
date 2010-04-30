@@ -11,6 +11,9 @@ from optparse import OptionParser
 
 parser = OptionParser()
 
+parser.add_option("-c", "--config", 
+                  action="store", dest="config", default="config/main.conf", 
+                  help="load configuration from FILE", metavar="FILE")
 parser.add_option("-u", "--update",
                   action="store_true", dest="mode_update", default=False,
                   help="check for policy updates")
@@ -23,7 +26,7 @@ parser.add_option("-s", "--scan",
 if options.mode_update:
     print "update mode!"
     
-    pt = PolicyTool('config/main.conf')
+    pt = PolicyTool(options.config)
     pt.add_module(Shadow())
     pt.add_module(PAM())
     pt.add_module(State())
