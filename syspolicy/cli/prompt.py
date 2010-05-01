@@ -21,3 +21,13 @@ def confirm(text, default = True):
             raise AbortedException()
         else:
             print "Sorry, response", input, "not understood."
+
+def getstr(text, default=''):
+    prompt = text + ' '
+    if default != '':
+        prompt += '[' + default + '] '
+    input = raw_input(prompt)
+    if input != '':
+        return input
+    else:
+        return default
