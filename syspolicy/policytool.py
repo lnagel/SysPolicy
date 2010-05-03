@@ -8,6 +8,7 @@ from syspolicy.config import Config
 from syspolicy.policy import Policy
 from syspolicy.worker import Worker
 from syspolicy.modules.module import Module
+from syspolicy.modules.autoloader import autoload_modules
 
 class PolicyTool:
     def __init__(self,  configfile):
@@ -30,6 +31,8 @@ class PolicyTool:
         
         self.worker = Worker(self)
         self.worker.start()
+        
+        autoload_modules(self)
     
     def set_state(self, type, path, value):
         if type in self.state:

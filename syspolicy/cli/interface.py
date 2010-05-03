@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from syspolicy.policytool import PolicyTool
-from syspolicy.modules.shadow import Shadow
-from syspolicy.modules.pam import PAM
-from syspolicy.modules.state import State
 from syspolicy.cli.prompt import confirm
 import yaml
 from optparse import OptionParser
@@ -28,9 +25,6 @@ def main():
         print "update mode!"
         
         pt = PolicyTool(options.config)
-        pt.add_module(Shadow())
-        pt.add_module(PAM())
-        pt.add_module(State())
         pt.get_policy_updates()
         
         print "------- ChangeSets -------"

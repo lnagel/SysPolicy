@@ -2,16 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from syspolicy.policytool import PolicyTool
-from syspolicy.modules.shadow import Shadow
-from syspolicy.modules.pam import PAM
-from syspolicy.modules.state import State
 import yaml
 
 pt = PolicyTool('config/main.conf')
-
-pt.add_module(Shadow())
-pt.add_module(PAM())
-pt.add_module(State())
 
 print yaml.dump(pt.get_policy_diff())
 
