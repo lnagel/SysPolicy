@@ -31,8 +31,7 @@ def main():
         with pt.cs_mlock:
             for cs in pt.changesets:
                 print yaml.dump(cs)
-                if confirm("Approve this ChangeSet?"):
-                    pt.accept_changeset(cs)
+                pt.accept_changeset(cs, confirm("Approve this ChangeSet?"))
         
         if len(pt.changesets) > 0 and confirm("Enqueue %d ChangeSets?" % len(pt.changesets)):
             pt.enqueue_changesets()
