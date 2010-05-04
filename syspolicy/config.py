@@ -100,7 +100,10 @@ def compare_trees(a,  b):
     for key in ak.difference(bk):
         r[key] = copy.deepcopy(a[key])
     for key in bk.difference(ak):
-        r[key] = None
+        if type(b[key]) is dict:
+            r[key] = compare_trees({},  b[key])
+        else:
+            r[key] = None
     for key in ak.intersection(bk):
         if type(a[key]) is dict and type(b[key]) is dict:
             diff = compare_trees(a[key],  b[key])
