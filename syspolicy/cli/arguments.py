@@ -10,6 +10,7 @@ class OptParser(OptionParser):
         self.set_defaults(config='config/main.conf')
         self.set_defaults(mode_update=False)
         self.set_defaults(mode_scan=False)
+        self.set_defaults(create_homedir=True)
 
         self.add_option("-c", "--config",
                 dest="config", metavar="FILE", 
@@ -64,7 +65,7 @@ class OptParser(OptionParser):
                 dest="skeleton", metavar="DIR", 
                 help="override the skeleton directory")
         user.add_option("-N", "--no-homedir",
-                dest="no_homedir", action="store_true", 
+                dest="create_homedir", action="store_false", 
                 help="do not create a home directory for the user account")
         user.add_option("-s", "--shell",
                 dest="shell", metavar="SHELL", 
