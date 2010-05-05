@@ -4,21 +4,10 @@
 from syspolicy.policytool import PolicyTool
 from syspolicy.cli.prompt import confirm
 import yaml
-from optparse import OptionParser
+from syspolicy.cli.arguments import OptParser
 
 def main():
-    parser = OptionParser()
-
-    parser.add_option("-c", "--config", 
-                      action="store", dest="config", default="config/main.conf", 
-                      help="load configuration from FILE", metavar="FILE")
-    parser.add_option("-u", "--update",
-                      action="store_true", dest="mode_update", default=False,
-                      help="check for policy updates")
-    parser.add_option("-s", "--scan",
-                      action="store_true", dest="mode_scan", default=False,
-                      help="perform a full system scan to verify the policy")
-
+    parser = OptParser()
     (options, args) = parser.parse_args()
 
     if options.mode_update:
