@@ -64,9 +64,12 @@ class OptParser(OptionParser):
         user.add_option("-k", "--skel",
                 dest="skeleton", metavar="DIR", 
                 help="override the skeleton directory")
-        user.add_option("-N", "--no-homedir",
+        user.add_option("-m", "--create-home",
+                dest="create_homedir", action="store_true", 
+                help="force the creation of a home directory")
+        user.add_option("-N", "--no-home",
                 dest="create_homedir", action="store_false", 
-                help="do not create a home directory for the user account")
+                help="skip the creation of a home directory")
         user.add_option("-s", "--shell",
                 dest="shell", metavar="SHELL", 
                 help="override the login shell")
