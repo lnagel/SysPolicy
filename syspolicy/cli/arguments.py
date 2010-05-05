@@ -66,7 +66,7 @@ class OptParser(OptionParser):
                 help="override the skeleton directory")
         user.add_option("-m", "--create-home",
                 dest="create_homedir", action="store_true", 
-                help="force the creation of a home directory")
+                help="force the creation of a home directory [default]")
         user.add_option("-N", "--no-home",
                 dest="create_homedir", action="store_false", 
                 help="skip the creation of a home directory")
