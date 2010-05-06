@@ -22,6 +22,12 @@ class Module:
     def pol_check_diff(self, policy, operation, path, value):
         print "pol_check_diff in:", policy, "operation:", operation, "for:",  path, ",", value
         cs = None
+        
+        # If we have an attribute with a dict value, let's load the entire
+        # value from the policy, instead of using only the differences
+        if type(value) == dict:
+            value = self.pt.policy[policy].get(path)
+        
         state_update = Change("state", "set_state", 
                              {"policy": policy, "path": path,
                              "value": value, "diff_type": operation})
