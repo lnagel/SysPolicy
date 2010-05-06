@@ -20,7 +20,7 @@ class Module:
         self.change_operations = {}
 
     def pol_check_diff(self, policy, operation, path, value):
-        print "pol_check_diff in:", policy, "operation:", operation, "for:",  path, ",", value
+        print "pol_check_diff in:", policy, "operation:", operation, "for:", path, ",", value
         cs = None
         
         # If we have an attribute with a dict value, let's load the entire

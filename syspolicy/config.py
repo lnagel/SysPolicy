@@ -11,7 +11,7 @@ CONFIG_CHANGED = 2
 CONFIG_REMOVED = 3
 
 class Config:
-    def __init__(self, name, source=None,  load=True):
+    def __init__(self, name, source=None, load=True):
         self.name = name
         self.data = {}
         self.source = source
@@ -76,9 +76,9 @@ class Config:
             return True
         return False
     
-    def compare_to(self,  other_config):
-        if isinstance(other_config,  Config):
-            return compare_trees(self.data,  other_config.data)
+    def compare_to(self, other_config):
+        if isinstance(other_config, Config):
+            return compare_trees(self.data, other_config.data)
 
 
 def walk(tree, path=[]):
@@ -92,7 +92,7 @@ def walk(tree, path=[]):
         return branch
     return None
 
-def compare_trees(a,  b):
+def compare_trees(a, b):
     r = {}
     ak = set(a.keys())
     bk = set(b.keys())
@@ -101,12 +101,12 @@ def compare_trees(a,  b):
         r[key] = copy.deepcopy(a[key])
     for key in bk.difference(ak):
         if type(b[key]) is dict:
-            r[key] = compare_trees({},  b[key])
+            r[key] = compare_trees({}, b[key])
         else:
             r[key] = None
     for key in ak.intersection(bk):
         if type(a[key]) is dict and type(b[key]) is dict:
-            diff = compare_trees(a[key],  b[key])
+            diff = compare_trees(a[key], b[key])
             if diff:
                 r[key] = diff
         elif type(a[key]) is list and type(b[key]) is list:
@@ -116,7 +116,7 @@ def compare_trees(a,  b):
             r[key] = copy.deepcopy(a[key])
     return r
 
-def diff_type(a,  b,  path):
+def diff_type(a, b, path):
     a_branch = walk(a, path)
     b_branch = walk(b, path)
     if a_branch is None:

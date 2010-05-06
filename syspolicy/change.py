@@ -28,7 +28,7 @@ def state_string(state):
         return ''
 
 class Change:
-    def __init__(self,  subsystem,  operation,  parameters):
+    def __init__(self, subsystem, operation, parameters):
         self.subsystem = subsystem
         self.operation = operation
         self.parameters = parameters
@@ -44,14 +44,14 @@ class ChangeSet:
             elif isinstance(changes, Change):
                 self.changes.append(changes)
     
-    def set_state(self,  state):
+    def set_state(self, state):
         if self.state == STATE_PROPOSED:
             if state in [STATE_ACCEPTED, STATE_IGNORED, STATE_REJECTED]:
                 for change in self.changes:
                     change.state = state
                 self.state = state
         elif self.state == STATE_ACCEPTED:
-            if self.state in [STATE_COMPLETED,  STATE_FAILED]:
+            if self.state in [STATE_COMPLETED, STATE_FAILED]:
                 self.state = state
         return (self.state == state)
     

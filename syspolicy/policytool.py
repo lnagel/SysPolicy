@@ -13,12 +13,12 @@ from syspolicy.modules.module import Module
 from syspolicy.modules.autoloader import autoload_modules
 
 class PolicyTool:
-    def __init__(self,  configfile):
+    def __init__(self, configfile):
         self.conf = Config("main_config", configfile)
         self.policy = {}
         self.state = {}
         self.handler = {}
-        for type,  file in self.conf.get(['policy']).items():
+        for type, file in self.conf.get(['policy']).items():
             self.policy[type] = Policy(type, self.conf.get(['general', 'policy-path'])+'/'+file, merge_default=True)
             try:
                 self.state[type] = Policy(type, self.conf.get(['general', 'state-path'])+'/'+file)
@@ -44,25 +44,25 @@ class PolicyTool:
         for type, state in self.state.items():
             state.save()
     
-    def add_module(self,  module):
+    def add_module(self, module):
         if isinstance(module, Module):
-            print module,  "is a module!"
+            print module, "is a module!"
             if module.pt is None:
                 module.pt = self
                 self.module[module.name] = module
                 self.module_locks[module.name] = threading.Lock()
-                for policy_type,  attributes in module.handled_attributes.items():
+                for policy_type, attributes in module.handled_attributes.items():
                     for attribute in attributes:
-                        self.register_handler(policy_type,  attribute,  module)
+                        self.register_handler(policy_type, attribute, module)
             else:
                 print module, "has already been registered with", module.pt
     
-    def register_handler(self,  policy_type,  attribute,  module):
+    def register_handler(self, policy_type, attribute, module):
         if policy_type not in self.handler:
             self.handler[policy_type] = {}
         if attribute not in self.handler[policy_type]:
             self.handler[policy_type][attribute] = module
-            print "Registered handler: policy",  policy_type,  "attribute",  attribute,  "to",  module
+            print "Registered handler: policy", policy_type, "attribute", attribute, "to", module
         else:
             raise Exception("Handler has already been set for policy '" + policy_type + "' attribute '" + attribute + "'")
     
@@ -77,11 +77,11 @@ class PolicyTool:
         print "Diff:", diff
         for type, policy in diff.items():
             if type in self.handler:
-                for group_name,  group in policy.items():
+                for group_name, group in policy.items():
                     for attribute, value in group.items():
                         if attribute in self.handler[type]:
                             h = self.handler[type][attribute]
-                            path = [group_name,  attribute]
+                            path = [group_name, attribute]
                             print "Found a handler for", type, "->", path, ":", h
                             operation = syspolicy.config.diff_type(policy, self.state[type], path)
                             cs = h.pol_check_diff(self.policy[type].name, operation, path, value)
@@ -92,16 +92,16 @@ class PolicyTool:
                         print "-" * 40
         return self.changesets
     
-    def get_cs_lock(self,  changeset):
+    def get_cs_lock(self, changeset):
         cs_lock = None
         with self.cs_mlock:
             cs_lock = self.cs_locks[changeset]
         return cs_lock
     
-    def get_module_lock(self,  module_name):
+    def get_module_lock(self, module_name):
         return self.module_locks[module_name]
 
-    def add_changeset(self,  changeset):
+    def add_changeset(self, changeset):
         with self.cs_mlock:
             self.changesets.append(changeset)
             self.cs_locks[changeset] = threading.Lock()
