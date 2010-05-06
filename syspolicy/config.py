@@ -11,14 +11,14 @@ CONFIG_CHANGED = 2
 CONFIG_REMOVED = 3
 
 class Config:
-    def __init__(self, name, source = None,  load = True):
+    def __init__(self, name, source=None,  load=True):
         self.name = name
         self.data = {}
         self.source = source
         if load and source:
             self.load()
     
-    def load(self, configfile = None):
+    def load(self, configfile=None):
         if configfile is None and self.source is not None:
             configfile = self.source
         if configfile is not None:
@@ -30,7 +30,7 @@ class Config:
             return True
         return False
     
-    def save(self, configfile = None):
+    def save(self, configfile=None):
         if configfile is None and self.source is not None:
             configfile = self.source
         if configfile is not None:
@@ -46,13 +46,13 @@ class Config:
     def sections(self):
         return self.data.keys()
     
-    def attributes(self, section = DEFAULT):
+    def attributes(self, section=DEFAULT):
         if section in self.data and type(self.data[section]) is dict:
             return self.data[section].keys()
         else:
             return {}
     
-    def get_branch(self, path = []):
+    def get_branch(self, path=[]):
         return walk(self.data, path)
 
     get = get_branch
@@ -81,7 +81,7 @@ class Config:
             return compare_trees(self.data,  other_config.data)
 
 
-def walk(tree, path = []):
+def walk(tree, path=[]):
     if type(path) is list:
         branch = tree
         for node in path:

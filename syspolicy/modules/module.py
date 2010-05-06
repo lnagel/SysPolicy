@@ -58,7 +58,7 @@ class Module:
     def pol_set_attribute(self, group, attribute, value):
         return None
     
-    def pol_rem_attribute(self, group, attribute, value = None):
+    def pol_rem_attribute(self, group, attribute, value=None):
         return None
     
     def perform_change(self, change):

@@ -16,7 +16,7 @@ class PAM(Module):
         print "Setting attribute value in the PAM module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
     
-    def pol_rem_attribute(self, group, attribute, value = None):
+    def pol_rem_attribute(self, group, attribute, value=None):
         if attribute in self.handled_attributes['services']:
             return self.pol_set_attribute(group, attribute, [])
     

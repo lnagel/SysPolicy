@@ -2,7 +2,7 @@
 class AbortedException(Exception):
     pass
 
-def confirm(text, default = True):
+def confirm(text, default=True):
     options = ""
     if default == True:
         options = "Y/n/q"

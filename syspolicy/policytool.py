@@ -106,7 +106,7 @@ class PolicyTool:
             self.changesets.append(changeset)
             self.cs_locks[changeset] = threading.Lock()
     
-    def accept_changeset(self, changeset, accepted = True):
+    def accept_changeset(self, changeset, accepted=True):
         if accepted == True:
             state = syspolicy.change.STATE_ACCEPTED
         else:

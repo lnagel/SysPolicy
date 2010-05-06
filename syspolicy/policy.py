@@ -23,7 +23,7 @@ class Policy(Config):
                                        copy.deepcopy(self.data[DEFAULT]),
                                        self.data[section])
     
-    def get(self, path = []):
+    def get(self, path=[]):
         val = self.get_branch(path)
         
         if type(path) is list and path:
