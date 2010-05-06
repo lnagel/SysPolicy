@@ -8,7 +8,9 @@ class Shadow(Module):
     def __init__(self):
         Module.__init__(self)
         self.name = "shadow"
-        self.handled_attributes['groups'] = ['uid_min',  'uid_max',  'usergroups',  'grouphomes',  'basedir']
+        self.handled_attributes['groups'] = ['uid_min', 'uid_max',
+                'usergroups',  'grouphomes',  'basedir',
+                'shell', 'skeleton', 'expire', 'inactive']
         self.change_operations['set_default'] = self.set_default
     
     def list_groups(self):
