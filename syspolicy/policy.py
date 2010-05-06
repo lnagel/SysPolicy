@@ -6,6 +6,24 @@ from syspolicy.config import Config, DEFAULT
 
 class Policy(Config):
     
+    def __init__(self, name, source=None, load=True, merge_default=False):
+        Config.__init__(self, name, source, load=False)
+        if load and source:
+            self.load(source, merge_default)
+    
+    def load(self, configfile=None, merge_default=False):
+        Config.load(self, configfile)
+        
+        # If merge_default is True and we have a default section,
+        # merge it's contents into other sections as well
+        if merge_default and DEFAULT in self.data.keys():
+            for section in set(self.data.keys()) - set([DEFAULT]):
+                print section
+                if type(self.data[section]) is dict:
+                    self.data[section] = merge_into(
+                                       copy.deepcopy(self.data[DEFAULT]),
+                                       self.data[section])
+    
     def get(self, path = []):
         val = self.get_branch(path)
         

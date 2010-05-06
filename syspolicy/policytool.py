@@ -19,11 +19,11 @@ class PolicyTool:
         self.state = {}
         self.handler = {}
         for type,  file in self.conf.get(['policy']).items():
-            self.policy[type] = Policy(type, self.conf.get(['general', 'policy-path'])+'/'+file)
+            self.policy[type] = Policy(type, self.conf.get(['general', 'policy-path'])+'/'+file, merge_default=True)
             try:
                 self.state[type] = Policy(type, self.conf.get(['general', 'state-path'])+'/'+file)
             except IOError:
-                self.state[type] = Policy(type, self.conf.get(['general', 'state-path'])+'/'+file,  False)
+                self.state[type] = Policy(type, self.conf.get(['general', 'state-path'])+'/'+file, load=False)
                 self.state[type].save()
         self.module = {}
         self.module_locks = {}
