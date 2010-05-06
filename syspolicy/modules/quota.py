@@ -8,15 +8,7 @@ class Quota(Module):
         Module.__init__(self)
         self.name = "quota"
         self.handled_attributes['groups'] = ['userquota', 'groupquota']
-        self.change_operations['set_default'] = self.set_default
-    
-    def pol_set_default(self, attribute,  value):
-        print "Setting new default in the Quota module", attribute, "=", value
-        return ChangeSet(Change("quota", "set_default", {attribute: value}))
     
     def pol_set_attribute(self, group, attribute, value):
         print "Setting attribute value in the Quota module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
-
-    def set_default(self, change):
-        return syspolicy.change.STATE_COMPLETED

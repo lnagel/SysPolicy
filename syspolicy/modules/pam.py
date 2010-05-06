@@ -10,12 +10,7 @@ class PAM(Module):
         self.name = "pam"
         self.handled_attributes['services'] = ['groups_allow', 'groups_deny',
                 'users_allow', 'users_deny', 'password']
-        self.change_operations['set_default'] = self.set_default
         self.change_operations['set_attribute'] = self.set_attribute
-    
-    def pol_set_default(self, attribute,  value):
-        print "Setting new default in the PAM module", attribute, "=", value
-        return ChangeSet(Change("shadow", "set_default", {attribute: value}))
     
     def pol_set_attribute(self, group, attribute, value):
         print "Setting attribute value in the PAM module", attribute, "=", value
@@ -24,9 +19,6 @@ class PAM(Module):
     def pol_rem_attribute(self, group, attribute, value = None):
         if attribute in self.handled_attributes['services']:
             return self.pol_set_attribute(group, attribute, [])
-    
-    def set_default(self, change):
-        return syspolicy.change.STATE_COMPLETED
     
     def set_attribute(self, change):
         service = change.parameters['group']
