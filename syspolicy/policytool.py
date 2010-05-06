@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import threading
 import syspolicy.change
 import syspolicy.config

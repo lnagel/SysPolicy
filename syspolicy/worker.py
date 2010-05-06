@@ -1,4 +1,6 @@
 
+from __future__ import with_statement
+
 import threading
 from Queue import Queue
 import syspolicy.change
@@ -22,8 +24,8 @@ class Worker(threading.Thread):
                         print "Worker processing Change", c, "with module", module.name, 
                         try:
                             c.state = module.perform_change(c)
-                        except Exception as e:
-                            print "Worker encountered an exception while processing ChangeSet", cs, ":", e
+                        except Exception, inst:
+                            print "Worker encountered an exception while processing ChangeSet", cs, ":", inst
                             c.state = syspolicy.change.STATE_FAILED
                         print "=>", syspolicy.change.state_string(c.state)
                         if c.state == syspolicy.change.STATE_FAILED:
