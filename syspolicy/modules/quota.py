@@ -19,8 +19,8 @@ class Quota(Module):
 
 def kilobytes(sizestr):
     if isinstance(sizestr, str):
-        powers = {'k': 1, 'm': 1024, 'g': 1024*1024, 't': 1024*1024*1024}
+        units = {'k': 1, 'm': 1024, 'g': 1024*1024, 't': 1024*1024*1024}
         m = re.match('^([0-9]*)([kmgt]?)$', sizestr.lower())
-        if m and m.group(2) in powers:
-            return int(m.group(1)) * powers[m.group(2)]
+        if m and m.group(2) in units:
+            return int(m.group(1)) * units[m.group(2)]
     return 0
