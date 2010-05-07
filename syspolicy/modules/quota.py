@@ -45,8 +45,6 @@ class Quota(Module):
         cmd.append(str(change.parameters.get('inode-hardlimit', 0)))
         cmd.append(change.parameters['filesystem'])
         
-        print
-        print ' '.join(cmd)
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdout, stderr) = p.communicate()
         p.wait()
