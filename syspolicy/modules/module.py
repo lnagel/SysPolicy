@@ -2,6 +2,7 @@
 import syspolicy.config
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
+from syspolicy.policy import merge_into
 import re
 import os
 import os.path
@@ -27,7 +28,7 @@ class Module:
         # If we have an attribute with a dict value, let's load the entire
         # value from the policy, instead of using only the differences
         if type(value) == dict:
-            value = self.pt.policy[policy].get(path)
+            value = merge_into(value, self.pt.policy[policy].get(path))
         
         state_update = Change("state", "set_state", 
                              {"policy": policy, "path": path,
