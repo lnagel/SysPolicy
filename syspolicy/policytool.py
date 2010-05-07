@@ -78,13 +78,14 @@ class PolicyTool:
         for type, policy in diff.items():
             if type in self.handler:
                 for group_name, group in policy.items():
-                    for attribute, value in group.items():
+                    for attribute, diff in group.items():
                         if attribute in self.handler[type]:
                             h = self.handler[type][attribute]
                             path = [group_name, attribute]
                             print "Found a handler for", type, "->", path, ":", h
                             operation = syspolicy.config.diff_type(policy, self.state[type], path)
-                            cs = h.pol_check_diff(self.policy[type].name, operation, path, value)
+                            value = self.policy[type].get(path)
+                            cs = h.pol_check_diff(self.policy[type].name, operation, path, value, diff)
                             if cs is not None:
                                 self.add_changeset(cs)
                         else:

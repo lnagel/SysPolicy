@@ -11,11 +11,11 @@ class PAM(Module):
         self.handled_attributes['services'] = ['groups_allow', 'groups_deny',
                 'users_allow', 'users_deny', 'password']
     
-    def pol_rem_attribute(self, group, attribute, value=None):
+    def pol_rem_attribute(self, group, attribute, value, diff):
         if attribute in self.handled_attributes['services']:
-            return self.pol_set_attribute(group, attribute, [])
+            return self.pol_set_attribute(group, attribute, [], diff)
     
-    def pol_set_attribute(self, group, attribute, value):
+    def pol_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the PAM module", attribute, "=", value
         
         configfile = self.pt.conf.get(['module-pam', 'pam-dir']) + '/' + group

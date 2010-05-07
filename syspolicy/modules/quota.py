@@ -10,7 +10,7 @@ class Quota(Module):
         self.name = "quota"
         self.handled_attributes['groups'] = ['userquota', 'groupquota']
     
-    def pol_set_attribute(self, group, attribute, value):
+    def pol_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Quota module", attribute, "=", value
         for partition, quota in value.items():
             print "Quota for", partition, "set to", kilobytes(quota), "kilobytes"

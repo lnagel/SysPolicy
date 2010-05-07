@@ -21,29 +21,21 @@ class Module:
         self.change_operations = {}
         self.change_operations['edit_configfile'] = self.edit_configfile
 
-    def pol_check_diff(self, policy, operation, path, value):
-        print "pol_check_diff in:", policy, "operation:", operation, "for:", path, ",", value
+    def pol_check_diff(self, policy, operation, path, value, diff):
+        print "pol_check_diff in:", policy, "operation:", operation, "for:", path, ",", diff
         cs = None
-        
-        # If we have an attribute with a dict value, let's load the entire
-        # value from the policy, instead of using only the differences
-        if type(value) == dict:
-            value = merge_into(value, self.pt.policy[policy].get(path))
-        
         state_update = Change("state", "set_state", 
                              {"policy": policy, "path": path,
-                                "value": self.pt.policy[policy].get(path),
-                                "diff_type": operation})
+                                "value": value, "diff_type": operation})
      
         if len(path) >= 2:
             group = path[0]
             attribute = path[1]
             
             if group == syspolicy.config.DEFAULT:
-                print "assign default setting:", attribute, "=", value
-                cs = self.pol_set_default(attribute, value)
+                cs = self.pol_set_default(attribute, value, diff)
             elif operation in self.diff_operations:
-                cs = self.diff_operations[operation](group, attribute, value)
+                cs = self.diff_operations[operation](group, attribute, value, diff)
         
         if cs is not None:
             cs.append(state_update)
@@ -52,16 +44,16 @@ class Module:
         
         return cs
 
-    def pol_set_default(self, attribute, value):
+    def pol_set_default(self, attribute, value, diff):
         return None
     
-    def  pol_new_attribute(self, group, attribute, value):
-        return self.pol_set_attribute(group, attribute, value)
+    def pol_new_attribute(self, group, attribute, value, diff):
+        return self.pol_set_attribute(group, attribute, value, diff)
     
-    def pol_set_attribute(self, group, attribute, value):
+    def pol_set_attribute(self, group, attribute, value, diff):
         return None
     
-    def pol_rem_attribute(self, group, attribute, value=None):
+    def pol_rem_attribute(self, group, attribute, value, diff):
         return None
     
     def perform_change(self, change):

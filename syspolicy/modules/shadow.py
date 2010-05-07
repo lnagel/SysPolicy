@@ -16,11 +16,11 @@ class Shadow(Module):
     def list_groups(self):
         return grp.getgrall()
     
-    def pol_set_default(self, attribute, value):
+    def pol_set_default(self, attribute, value, diff):
         print "Setting new default in the Shadow module", attribute, "=", value
         return ChangeSet(Change("shadow", "set_default", {attribute: value}))
     
-    def pol_set_attribute(self, group, attribute, value):
+    def pol_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Shadow module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
 
