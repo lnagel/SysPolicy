@@ -2,6 +2,7 @@
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
 from syspolicy.modules.module import Module
+import syspolicy.modules.shadow as shadow
 import re
 import subprocess
 
@@ -27,7 +28,13 @@ class Quota(Module):
                             'block-hardlimit': kilobytes(quota), 'filesystem': fs})
                 cs.append(c)
         elif attribute == 'userquota':
-            pass
+            gid = shadow.get_group_by_name(group).gr_gid
+            for user in shadow.list_users_with_gid(gid):
+                for fs, quota in diff.items():
+                    c = Change(self.name, "set_quota",
+                            {'type': 'user', 'object': user.pw_name,
+                                'block-hardlimit': kilobytes(quota), 'filesystem': fs})
+                    cs.append(c)
         return cs
     
     def set_quota(self, change):
