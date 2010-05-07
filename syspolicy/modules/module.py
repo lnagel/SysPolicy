@@ -32,7 +32,8 @@ class Module:
         
         state_update = Change("state", "set_state", 
                              {"policy": policy, "path": path,
-                             "value": value, "diff_type": operation})
+                                "value": self.pt.policy[policy].get(path),
+                                "diff_type": operation})
      
         if len(path) >= 2:
             group = path[0]
