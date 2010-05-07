@@ -18,6 +18,7 @@ class Module:
                             syspolicy.config.CONFIG_REMOVED: self.pol_rem_attribute
                         }
         self.change_operations = {}
+        self.change_operations['edit_configfile'] = self.edit_configfile
 
     def pol_check_diff(self, policy, operation, path, value):
         print "pol_check_diff in:", policy, "operation:", operation, "for:", path, ",", value
@@ -67,6 +68,18 @@ class Module:
         else:
             return syspolicy.change.STATE_NOT_HANDLED
     
+    def edit_configfile(self, change):
+        try:
+            self.append_lines_to_file(change.parameters['configfile'],
+                                      change.parameters['before'],
+                                      change.parameters['after'],
+                                      change.parameters['id'],
+                                      change.parameters['lines'])
+        except IOError:
+            return syspolicy.change.STATE_FAILED
+        
+        return syspolicy.change.STATE_COMPLETED
+    
     def append_lines_to_file(self, configfile, before, after, id, lines):
         orig_file = open(configfile, "r")
         orig_src = orig_file.readlines()
@@ -79,9 +92,13 @@ class Module:
         start_tag = "### BEGIN " + tag + " ###\n"
         end_tag = "### END " + tag + " ### \n"
         
-        if len(lines) > 0:
-            lines.insert(0, start_tag)
-            lines.append(end_tag)
+        elines = []
+        for line in lines:
+            elines.append(line + '\n')
+        
+        if len(elines) > 0:
+            elines.insert(0, start_tag)
+            elines.append(end_tag)
         
         filter = False
         for line in orig_src:
@@ -101,19 +118,19 @@ class Module:
                     seek_for_end = False
                 
                 if before is not None and not seek_for_end and not inserted and re.search(before, line.rstrip("\r\n")):
-                    dst.extend(lines)
+                    dst.extend(elines)
                     inserted = True
                 
                 dst.append(line)
                 
                 if after is not None and not seek_for_end and not inserted and re.search(after, line.rstrip("\r\n")):
-                    dst.extend(lines)
+                    dst.extend(elines)
                     inserted = True
         else:
             dst.extend(src)
         
         if not inserted:
-            dst.extend(lines)
+            dst.extend(elines)
         
         print
         print 40 * "-"

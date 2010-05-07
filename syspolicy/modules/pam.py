@@ -10,21 +10,15 @@ class PAM(Module):
         self.name = "pam"
         self.handled_attributes['services'] = ['groups_allow', 'groups_deny',
                 'users_allow', 'users_deny', 'password']
-        self.change_operations['set_attribute'] = self.set_attribute
-    
-    def pol_set_attribute(self, group, attribute, value):
-        print "Setting attribute value in the PAM module", attribute, "=", value
-        return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
     
     def pol_rem_attribute(self, group, attribute, value=None):
         if attribute in self.handled_attributes['services']:
             return self.pol_set_attribute(group, attribute, [])
     
-    def set_attribute(self, change):
-        service = change.parameters['group']
-        attribute = change.parameters['attribute']
-        value = change.parameters['value']
-        configfile = self.pt.conf.get(['module-pam', 'pam-dir']) + '/' + service
+    def pol_set_attribute(self, group, attribute, value):
+        print "Setting attribute value in the PAM module", attribute, "=", value
+        
+        configfile = self.pt.conf.get(['module-pam', 'pam-dir']) + '/' + group
         lines = []
         
         if not os.access(configfile, os.F_OK):
@@ -39,20 +33,20 @@ class PAM(Module):
         
         if attribute == 'groups_allow':
             for group in value:
-                lines.append('account required pam_succeed_if.so user ingroup ' + group + "\n")
+                lines.append('account required pam_succeed_if.so user ingroup ' + group)
         elif attribute == 'groups_deny':
             for group in value:
-                lines.append('account required pam_succeed_if.so user notingroup ' + group + "\n")
+                lines.append('account required pam_succeed_if.so user notingroup ' + group)
         elif attribute == 'users_allow':
             if len(value) == 1:
-                lines.append('account required pam_succeed_if.so user = ' + value[0] + "\n")
+                lines.append('account required pam_succeed_if.so user = ' + value[0])
             elif len(value) > 1:
-                lines.append('account required pam_succeed_if.so user in ' + ':'.join(value) + "\n")
+                lines.append('account required pam_succeed_if.so user in ' + ':'.join(value))
         elif attribute == 'users_deny':
             if len(value) == 1:
-                lines.append('account required pam_succeed_if.so user != ' + value[0] + "\n")
+                lines.append('account required pam_succeed_if.so user != ' + value[0])
             elif len(value) > 1:
-                lines.append('account required pam_succeed_if.so user notin ' + ':'.join(value) + "\n")
+                lines.append('account required pam_succeed_if.so user notin ' + ':'.join(value))
         elif attribute == 'password':
             args = []
             before = '^password(.*)pam_unix.so'
@@ -70,12 +64,13 @@ class PAM(Module):
                     raise Exception('Argument ' + str(k) +
                             ' is not supported by pam_cracklib.so')
             if len(args) > 0:
-                lines.append('password required pam_cracklib.so ' + ' '.join(args) + '\n')
+                lines.append('password required pam_cracklib.so ' + ' '.join(args))
         
-        try:
-            self.append_lines_to_file(configfile, before, after, attribute, lines)
-        except IOError:
-            return syspolicy.change.STATE_FAILED
+        params = {}
+        params['configfile'] = configfile
+        params['before'] = before
+        params['after'] = after
+        params['id'] = attribute
+        params['lines'] = lines
 
-        
-        return syspolicy.change.STATE_COMPLETED
+        return ChangeSet(Change(self.name, "edit_configfile", params))
