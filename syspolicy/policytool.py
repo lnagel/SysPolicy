@@ -83,8 +83,12 @@ class PolicyTool:
                             h = self.handler[type][attribute]
                             path = [group_name, attribute]
                             print "Found a handler for", type, "->", path, ":", h
-                            operation = syspolicy.config.diff_type(policy, self.state[type], path)
-                            value = self.policy[type].get(path)
+                            if group_name not in self.policy[type].data:
+                                value = None
+                                operation = syspolicy.config.CONFIG_REMOVED
+                            else:
+                                value = self.policy[type].get(path)
+                                operation = syspolicy.config.diff_type(policy, self.state[type], path)
                             cs = h.pol_check_diff(self.policy[type].name, operation, path, value, valuediff)
                             if cs is not None:
                                 self.add_changeset(cs)
