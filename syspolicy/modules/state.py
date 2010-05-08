@@ -11,10 +11,11 @@ class State(Module):
         self.change_operations['set_state'] = self.set_state
 
     def set_state(self, change):
-        policy = change.parameters['policy']
-        path = change.parameters['path']
-        diff_type = change.parameters['diff_type']
-        value = change.parameters['value']
+        p = change.parameters
+        policy = p['policy']
+        path = p['path']
+        diff_type = p['diff_type']
+        value = p['value']
         
         if diff_type in [syspolicy.config.CONFIG_ADDED, syspolicy.config.CONFIG_CHANGED]:
             self.pt.set_state(policy, path, value)

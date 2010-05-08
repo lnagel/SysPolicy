@@ -44,31 +44,32 @@ class Shadow(Module):
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs
     
-    def add_user(self, change):        
+    def add_user(self, change):
+        p = change.parameters
         cmd = [USERADD]
         
-        cmd.extend(['--comment', change.parameters['name']])
-        cmd.extend(['--home-dir', change.parameters['homedir']])
-        if change.parameters['expire'] > 0:
-            expiredate = date.today() + timedelta(change.parameters['expire'])
+        cmd.extend(['--comment', p['name']])
+        cmd.extend(['--home-dir', p['homedir']])
+        if p['expire'] > 0:
+            expiredate = date.today() + timedelta(p['expire'])
             cmd.extend(['--expiredate', expiredate.isoformat()])
-        cmd.extend(['--inactive', str(change.parameters['inactive'])])
-        cmd.extend(['--gid', change.parameters['group']])
-        if change.parameters['extragroups']:
-            cmd.extend(['--groups', ','.join(change.parameters['extragroups'])])
-        cmd.extend(['--skel', change.parameters['skeleton']])
-        cmd.extend(['--key', 'UID_MIN=' + str(change.parameters['uid_min'])])
-        cmd.extend(['--key', 'UID_MAX=' + str(change.parameters['uid_max'])])
-        if change.parameters['create_homedir']:
+        cmd.extend(['--inactive', str(p['inactive'])])
+        cmd.extend(['--gid', p['group']])
+        if p['extragroups']:
+            cmd.extend(['--groups', ','.join(p['extragroups'])])
+        cmd.extend(['--skel', p['skeleton']])
+        cmd.extend(['--key', 'UID_MIN=' + str(p['uid_min'])])
+        cmd.extend(['--key', 'UID_MAX=' + str(p['uid_max'])])
+        if p['create_homedir']:
             cmd.append('--create-home')
-        if change.parameters['usergroups']:
+        if p['usergroups']:
             cmd.append('--user-group')
         else:
             cmd.append('--no-user-group')
         # --password
-        cmd.extend(['--shell', change.parameters['shell']])
+        cmd.extend(['--shell', p['shell']])
         
-        cmd.append(change.parameters['username'])
+        cmd.append(p['username'])
         
         return self.execute(cmd)
 

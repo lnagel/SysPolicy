@@ -65,12 +65,13 @@ class Module:
             return syspolicy.change.STATE_NOT_HANDLED
     
     def edit_configfile(self, change):
+        p = change.parameters
         try:
-            self.append_lines_to_file(change.parameters['configfile'],
-                                      change.parameters['before'],
-                                      change.parameters['after'],
-                                      change.parameters['id'],
-                                      change.parameters['lines'])
+            self.append_lines_to_file(p['configfile'],
+                                      p['before'],
+                                      p['after'],
+                                      p['id'],
+                                      p['lines'])
         except IOError:
             return syspolicy.change.STATE_FAILED
         

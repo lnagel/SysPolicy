@@ -55,16 +55,17 @@ class Quota(Module):
     def set_quota(self, change):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>
         # <block-softlimit> <block-hardlimit> <inode-softlimit> <inode-hardlimit> -a|<filesystem>
+        p = change.parameters
         types = {'user': '-u', 'group': '-g'}
         cmd = [SETQUOTA]
         
-        cmd.append(types[change.parameters['type']])            
-        cmd.append(change.parameters['object'])
-        cmd.append(str(change.parameters.get('block-softlimit', 0)))
-        cmd.append(str(change.parameters.get('block-hardlimit', 0)))
-        cmd.append(str(change.parameters.get('inode-softlimit', 0)))
-        cmd.append(str(change.parameters.get('inode-hardlimit', 0)))
-        cmd.append(change.parameters['filesystem'])
+        cmd.append(types[p['type']])            
+        cmd.append(p['object'])
+        cmd.append(str(p.get('block-softlimit', 0)))
+        cmd.append(str(p.get('block-hardlimit', 0)))
+        cmd.append(str(p.get('inode-softlimit', 0)))
+        cmd.append(str(p.get('inode-hardlimit', 0)))
+        cmd.append(p['filesystem'])
         
         return self.execute(cmd)
 
