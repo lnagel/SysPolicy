@@ -46,9 +46,8 @@ class Quota(Module):
         for change in changeset.changes:
             if change.operation == 'add_user':
                 group = change.parameters['group']
-                userquota = self.pt.policy['groups'].get([group, 'userquota']).items()
-                print userquota
-                for fs, quota in userquota:
+                userquota = self.pt.policy['groups'].get([group, 'userquota'])
+                for fs, quota in userquota.items():
                     c = Change(self.name, "set_quota",
                             {'type': 'user', 'object': change.parameters['username'],
                                 'block-hardlimit': kilobytes(quota), 'filesystem': fs})
