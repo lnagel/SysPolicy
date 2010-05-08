@@ -73,9 +73,6 @@ class Shadow(Module):
         
         return self.execute(cmd)
 
-    def set_default(self, change):
-        return syspolicy.change.STATE_COMPLETED
-
     
 def list_groups():
     return grp.getgrall()
