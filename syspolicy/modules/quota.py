@@ -25,20 +25,21 @@ class Quota(Module):
     def cs_set_attribute(self, group, attribute, value, diff):
         cs = ChangeSet()
         if attribute == 'groupquota':
-            for fs, quota in diff.items():
-                c = Change(self.name, "set_quota",
-                        {'type': 'group', 'object': group,
-                            'block-hardlimit': kilobytes(quota), 'filesystem': fs})
-                cs.append(c)
+            cs.extend(self.c_set_quota(diff, 'group', group))
         elif attribute == 'userquota':
             gid = shadow.get_group_by_name(group).gr_gid
             for user in shadow.list_users_with_gid(gid):
-                for fs, quota in diff.items():
-                    c = Change(self.name, "set_quota",
-                            {'type': 'user', 'object': user.pw_name,
-                                'block-hardlimit': kilobytes(quota), 'filesystem': fs})
-                    cs.append(c)
+                cs.extend(self.c_set_quota(diff, 'user', user.pw_name))
         return cs
+    
+    def c_set_quota(self, quota, type, object):
+        changes = []
+        for fs, limit in quota.items():
+            c = Change(self.name, "set_quota",
+                    {'type': type, 'object': object,
+                     'block-hardlimit': kilobytes(limit), 'filesystem': fs})
+            changes.append(c)
+        return changes
     
     def handle_event(self, event, changeset):
         print "Quota module caught event", event, "with changeset", changeset
@@ -46,11 +47,7 @@ class Quota(Module):
             if change.operation == 'add_user':
                 group = change.parameters['group']
                 userquota = self.pt.policy['groups'].get([group, 'userquota'])
-                for fs, quota in userquota.items():
-                    c = Change(self.name, "set_quota",
-                            {'type': 'user', 'object': change.parameters['username'],
-                                'block-hardlimit': kilobytes(quota), 'filesystem': fs})
-                    changeset.append(c)
+                changeset.extend(self.c_set_quota(userquota, 'user', change.parameters['username']))
     
     def set_quota(self, change):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>

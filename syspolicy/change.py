@@ -75,3 +75,6 @@ class ChangeSet:
     def insert(self, position, change):
         self.changes.insert(position, change)
     
+    def extend(self, changes):
+        self.changes.extend(changes)
+    
