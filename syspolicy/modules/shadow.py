@@ -9,6 +9,7 @@ from syspolicy.policy import merge_into
 from syspolicy.modules.module import Module
 
 USERADD = '/usr/sbin/useradd'
+USERDEL = '/usr/sbin/userdel'
 
 class Shadow(Module):
     def __init__(self):
@@ -18,6 +19,7 @@ class Shadow(Module):
                 'usergroups', 'grouphomes', 'basedir', 'create_homedir', 
                 'shell', 'skeleton', 'expire', 'inactive']
         self.change_operations['add_user'] = self.add_user
+        self.change_operations['del_user'] = self.del_user
     
     def cs_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Shadow module", attribute, "=", value
@@ -97,8 +99,15 @@ class Shadow(Module):
         cmd.append(p['username'])
         
         return self.execute(cmd)
-
     
+    def del_user(self, change):
+        p = change.parameters
+        cmd = [USERDEL]
+        cmd.append(p['username'])
+        
+        return self.execute(cmd)
+
+
 def list_groups():
     return grp.getgrall()
 
