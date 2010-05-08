@@ -9,6 +9,7 @@ from syspolicy.policy import merge_into
 from syspolicy.modules.module import Module
 
 USERADD = '/usr/sbin/useradd'
+USERMOD = '/usr/sbin/usermod'
 USERDEL = '/usr/sbin/userdel'
 
 class Shadow(Module):
@@ -19,6 +20,7 @@ class Shadow(Module):
                 'usergroups', 'grouphomes', 'basedir', 'create_homedir', 
                 'shell', 'skeleton', 'expire', 'inactive']
         self.change_operations['add_user'] = self.add_user
+        self.change_operations['mod_user'] = self.mod_user
         self.change_operations['del_user'] = self.del_user
     
     def cs_set_attribute(self, group, attribute, value, diff):
@@ -46,15 +48,23 @@ class Shadow(Module):
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs
     
-    def cs_mod_user(self, username, group, extragroups=[],
+    def cs_mod_user(self, username, group=None, extragroups=[],
                     name=None, homedir=None, policy={}):
         # retrieve information about the users current group
         oldgid = get_user_by_name(username).pw_gid
         oldgroup = get_group_by_id(oldgid).gr_name
         
-        args = {'username': username, 'group': group, 'name': name,
-                'oldgroup': oldgroup, 'extragroups': extragroups,
-                'homedir': homedir}
+        args = {'username': username}
+        args = merge_into(args, policy)
+        
+        if group is not None:
+            args['group'] = group
+            args['oldgroup'] = oldgroup
+            args['extragroups'] = extragroups
+        if name is not None:
+            args['name'] = name
+        if homedir is not None:
+            args['homedir'] = homedir
         
         cs = ChangeSet(Change(self.name, "mod_user", args))
         self.pt.emit_event(syspolicy.event.USER_MODIFIED, cs)
@@ -95,6 +105,33 @@ class Shadow(Module):
             cmd.append('--no-user-group')
         # --password
         cmd.extend(['--shell', p['shell']])
+        
+        cmd.append(p['username'])
+        
+        return self.execute(cmd)
+    
+    def mod_user(self, change):
+        p = change.parameters
+        cmd = [USERMOD]
+        
+        if 'name' in p:
+            cmd.extend(['--comment', p['name']])
+        if 'homedir' in p:
+            cmd.extend(['--home', p['homedir']])
+        if 'expire' in p and p['expire'] > 0:
+            expiredate = date.today() + timedelta(p['expire'])
+            cmd.extend(['--expiredate', expiredate.isoformat()])
+        if 'inactive' in p:
+            cmd.extend(['--inactive', str(p['inactive'])])
+        if 'group' in p:
+            cmd.extend(['--gid', p['group']])
+        if 'extragroups' in p and p['extragroups']:
+            cmd.extend(['--groups', ','.join(p['extragroups'])])
+        # --append ?
+        # --move-home
+        # --password
+        if 'shell' in p:
+            cmd.extend(['--shell', p['shell']])
         
         cmd.append(p['username'])
         
