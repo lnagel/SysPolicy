@@ -55,8 +55,8 @@ class PolicyTool:
                 for policy_type, attributes in module.handled_attributes.items():
                     for attribute in attributes:
                         self.register_handler(policy_type, attribute, module)
-                for event in module.event_hooks:
-                    self.register_event(event, module)
+                for event, handler in module.event_hooks.items():
+                    self.register_event_handler(event, handler)
             else:
                 print module, "has already been registered with", module.pt
     
@@ -69,16 +69,16 @@ class PolicyTool:
         else:
             raise Exception("Handler has already been set for policy '" + policy_type + "' attribute '" + attribute + "'")
     
-    def register_event(self, event, module):
+    def register_event_handler(self, event, handler):
         if event not in self.events:
             self.events[event] = []
-        self.events[event].append(module)
-        print "Registered event", str(event), "to", module
+        self.events[event].append(handler)
+        print "Registered event", str(event), "to", handler
     
     def emit_event(self, event, changeset=None):
         if event in self.events:
-            for module in self.events[event]:
-                module.handle_event(event, changeset)
+            for handler in self.events[event]:
+                handler(event, changeset)
     
     def get_policy_diff(self):
         diff = {}
