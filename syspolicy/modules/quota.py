@@ -5,7 +5,6 @@ import syspolicy.event
 from syspolicy.modules.module import Module
 import syspolicy.modules.shadow as shadow
 import re
-import subprocess
 
 SETQUOTA = "/usr/sbin/setquota"
 
@@ -57,12 +56,8 @@ class Quota(Module):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>
         # <block-softlimit> <block-hardlimit> <inode-softlimit> <inode-hardlimit> -a|<filesystem>
         types = {'user': '-u', 'group': '-g'}
-        cmd = []
+        cmd = [SETQUOTA]
         
-        if self.pt.debug:
-            cmd.append('/usr/bin/echo')
-        
-        cmd.append(SETQUOTA)
         cmd.append(types[change.parameters['type']])            
         cmd.append(change.parameters['object'])
         cmd.append(str(change.parameters.get('block-softlimit', 0)))
@@ -71,19 +66,7 @@ class Quota(Module):
         cmd.append(str(change.parameters.get('inode-hardlimit', 0)))
         cmd.append(change.parameters['filesystem'])
         
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (stdout, stderr) = p.communicate()
-        p.wait()
-        
-        if self.pt.debug:
-            print '>>>', stdout
-        
-        if stderr:
-            raise Exception(stderr)
-        elif p.returncode == 0:
-            return syspolicy.change.STATE_COMPLETED
-        else:
-            return syspolicy.change.STATE_FAILED
+        return self.execute(cmd)
 
 
 def kilobytes(sizestr):

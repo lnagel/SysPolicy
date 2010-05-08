@@ -7,6 +7,7 @@ import re
 import os
 import os.path
 import tempfile
+import subprocess
 
 class Module:
     def __init__(self):
@@ -144,5 +145,20 @@ class Module:
         
         return True
     
-
-    
+    def execute(self, cmd=[]):
+        if self.pt.debug:
+            cmd = ['/usr/bin/echo'] + cmd
+        
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (stdout, stderr) = p.communicate()
+        p.wait()
+        
+        if self.pt.debug:
+            print '>>>', stdout, 
+        
+        if stderr:
+            raise Exception(stderr)
+        elif p.returncode == 0:
+            return syspolicy.change.STATE_COMPLETED
+        else:
+            return syspolicy.change.STATE_FAILED
