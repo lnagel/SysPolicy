@@ -15,31 +15,30 @@ class OptParser(OptionParser):
         self.add_option("-c", "--config",
                 dest="config", metavar="FILE", 
                 help="load configuration from FILE")
-      
-        self.add_option("-u", "--update",
+        
+        mode = OptionGroup(self, "Run mode")      
+        mode.add_option("-u", "--update",
                 action="store_true", dest="mode_update",
                 help="check for policy updates")
-        self.add_option("--scan",
+        mode.add_option("--scan",
                 action="store_true", dest="mode_scan",
                 help="perform a full system scan to verify the policy")
-        
-        ug = OptionGroup(self, "User & group management")
-        ug.add_option("--au", "--add-user",
+        mode.add_option("--au", "--add-user",
                 dest="add_user", metavar="USER", 
                 help="Add a new user account")
-        ug.add_option("--mu", "--mod-user",
+        mode.add_option("--mu", "--mod-user",
                 dest="mod_user", metavar="USER", 
                 help="Modify a user account")
-        ug.add_option("--du", "--del-user",
+        mode.add_option("--du", "--del-user",
                 dest="del_user", metavar="USER", 
                 help="Remove a user account")
-        ug.add_option("--ag", "--add-group",
+        mode.add_option("--ag", "--add-group",
                 dest="add_group", metavar="GROUP", 
                 help="Add a new group")
-        ug.add_option("--dg", "--del-group",
+        mode.add_option("--dg", "--del-group",
                 dest="del_group", metavar="GROUP", 
                 help="Remove a group")
-        self.add_option_group(ug)
+        self.add_option_group(mode)
         
         user = OptionGroup(self, "User account parameters")
         user.add_option("-b", "--base-dir",
