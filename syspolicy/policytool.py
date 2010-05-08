@@ -54,13 +54,13 @@ class PolicyTool:
                 self.module_locks[module.name] = threading.Lock()
                 for policy_type, attributes in module.handled_attributes.items():
                     for attribute in attributes:
-                        self.register_handler(policy_type, attribute, module)
+                        self.register_attribute_handler(policy_type, attribute, module)
                 for event, handler in module.event_hooks.items():
                     self.register_event_handler(event, handler)
             else:
                 print module, "has already been registered with", module.pt
     
-    def register_handler(self, policy_type, attribute, module):
+    def register_attribute_handler(self, policy_type, attribute, module):
         if policy_type not in self.handler:
             self.handler[policy_type] = {}
         if attribute not in self.handler[policy_type]:
