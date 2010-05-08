@@ -15,6 +15,7 @@ from syspolicy.modules.autoloader import autoload_modules
 class PolicyTool:
     def __init__(self, configfile):
         self.conf = Config("main_config", configfile)
+        self.debug = False
         self.policy = {}
         self.state = {}
         self.handler = {}

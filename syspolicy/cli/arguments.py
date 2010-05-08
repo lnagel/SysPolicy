@@ -8,12 +8,16 @@ class OptParser(OptionParser):
         OptionParser.__init__(self)
         
         self.set_defaults(config='config/main.conf')
+        self.set_defaults(debug=False)
         self.set_defaults(mode_update=False)
         self.set_defaults(mode_scan=False)
 
         self.add_option("-c", "--config",
                 dest="config", metavar="FILE", 
                 help="load configuration from FILE")
+        self.add_option("-D", "--debug",
+                dest="debug", action="store_true", 
+                help="enable debug code-paths")
         
         mode = OptionGroup(self, "Run mode")      
         mode.add_option("-u", "--update",

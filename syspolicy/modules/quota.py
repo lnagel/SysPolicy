@@ -59,6 +59,9 @@ class Quota(Module):
         types = {'user': '-u', 'group': '-g'}
         cmd = []
         
+        if self.pt.debug:
+            cmd.append('/usr/bin/echo')
+        
         cmd.append(SETQUOTA)
         cmd.append(types[change.parameters['type']])            
         cmd.append(change.parameters['object'])
@@ -71,6 +74,9 @@ class Quota(Module):
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdout, stderr) = p.communicate()
         p.wait()
+        
+        if self.pt.debug:
+            print '>>>', stdout
         
         if stderr:
             raise Exception(stderr)

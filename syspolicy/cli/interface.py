@@ -20,6 +20,7 @@ def main():
         parser.error("You have to specify exactly 1 run mode option")
     
     pt = PolicyTool(opts.config)
+    pt.debug = opts.debug
     cs = None
 
     if opts.mode_update:
