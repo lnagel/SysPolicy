@@ -19,11 +19,11 @@ class Quota(Module):
         self.event_hooks.append(syspolicy.event.USER_MODIFIED)
         self.event_hooks.append(syspolicy.event.USER_REMOVED)
     
-    def pol_rem_attribute(self, group, attribute, value, diff):
+    def cs_rem_attribute(self, group, attribute, value, diff):
         if attribute in self.handled_attributes['groups']:
-            return self.pol_set_attribute(group, attribute, {}, diff)
+            return self.cs_set_attribute(group, attribute, {}, diff)
     
-    def pol_set_attribute(self, group, attribute, value, diff):
+    def cs_set_attribute(self, group, attribute, value, diff):
         cs = ChangeSet()
         if attribute == 'groupquota':
             for fs, quota in diff.items():

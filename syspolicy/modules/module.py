@@ -14,16 +14,16 @@ class Module:
         self.handled_attributes = {}
         self.pt = None
         self.diff_operations = {
-                            syspolicy.config.CONFIG_ADDED: self.pol_new_attribute,
-                            syspolicy.config.CONFIG_CHANGED: self.pol_set_attribute,
-                            syspolicy.config.CONFIG_REMOVED: self.pol_rem_attribute
+                            syspolicy.config.CONFIG_ADDED: self.cs_new_attribute,
+                            syspolicy.config.CONFIG_CHANGED: self.cs_set_attribute,
+                            syspolicy.config.CONFIG_REMOVED: self.cs_rem_attribute
                         }
         self.change_operations = {}
         self.change_operations['edit_configfile'] = self.edit_configfile
         self.event_hooks = []
 
-    def pol_check_diff(self, policy, operation, path, value, diff):
-        print "pol_check_diff in:", policy, "operation:", operation, "for:", path, ",", diff
+    def cs_check_diff(self, policy, operation, path, value, diff):
+        print "cs_check_diff in:", policy, "operation:", operation, "for:", path, ",", diff
         cs = None
         state_update = Change("state", "set_state", 
                              {"policy": policy, "path": path,
@@ -34,7 +34,7 @@ class Module:
             attribute = path[1]
             
             if group == syspolicy.config.DEFAULT:
-                cs = self.pol_set_default(attribute, value, diff)
+                cs = self.cs_set_default(attribute, value, diff)
             elif operation in self.diff_operations:
                 cs = self.diff_operations[operation](group, attribute, value, diff)
         
@@ -45,16 +45,16 @@ class Module:
         
         return cs
 
-    def pol_set_default(self, attribute, value, diff):
+    def cs_set_default(self, attribute, value, diff):
         return None
     
-    def pol_new_attribute(self, group, attribute, value, diff):
-        return self.pol_set_attribute(group, attribute, value, diff)
+    def cs_new_attribute(self, group, attribute, value, diff):
+        return self.cs_set_attribute(group, attribute, value, diff)
     
-    def pol_set_attribute(self, group, attribute, value, diff):
+    def cs_set_attribute(self, group, attribute, value, diff):
         return None
     
-    def pol_rem_attribute(self, group, attribute, value, diff):
+    def cs_rem_attribute(self, group, attribute, value, diff):
         return None
     
     def perform_change(self, change):

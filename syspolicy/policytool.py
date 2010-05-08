@@ -98,7 +98,7 @@ class PolicyTool:
                             else:
                                 value = self.policy[type].get(path)
                                 operation = syspolicy.config.diff_type(policy, self.state[type], path)
-                            cs = h.pol_check_diff(self.policy[type].name, operation, path, value, valuediff)
+                            cs = h.cs_check_diff(self.policy[type].name, operation, path, value, valuediff)
                             if cs is not None:
                                 self.add_changeset(cs)
                         else:
