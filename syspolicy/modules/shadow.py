@@ -44,6 +44,17 @@ class Shadow(Module):
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs
     
+    def cs_mod_user(self, username, group, oldgroup, extragroups=[],
+                    name=None, homedir=None, policy={}):
+        
+        args = {'username': username, 'group': group, 'name': name,
+                'oldgroup': oldgroup, 'extragroups': extragroups,
+                'homedir': homedir}
+        
+        cs = ChangeSet(Change(self.name, "mod_user", args))
+        self.pt.emit_event(syspolicy.event.USER_MODIFIED, cs)
+        return cs
+    
     def add_user(self, change):
         p = change.parameters
         cmd = [USERADD]
@@ -80,8 +91,14 @@ def list_groups():
 def list_users():
     return pwd.getpwall()
 
+def get_group_by_id(name):
+    return grp.getgrgid(name)
+
 def get_group_by_name(name):
     return grp.getgrnam(name)
+
+def get_user_by_name(name):
+    return pwd.getpwnam(name)
 
 def list_users_with_gid(gid):
     users = []
