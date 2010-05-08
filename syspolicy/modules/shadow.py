@@ -1,11 +1,14 @@
 
 import pwd, grp
 import copy
+from datetime import date, timedelta
 import syspolicy.change
 import syspolicy.event
 from syspolicy.change import Change, ChangeSet
 from syspolicy.policy import merge_into
 from syspolicy.modules.module import Module
+
+USERADD = '/usr/sbin/useradd'
 
 class Shadow(Module):
     def __init__(self):
@@ -14,6 +17,7 @@ class Shadow(Module):
         self.handled_attributes['groups'] = ['uid_min', 'uid_max',
                 'usergroups', 'grouphomes', 'basedir', 'create_homedir', 
                 'shell', 'skeleton', 'expire', 'inactive']
+        self.change_operations['add_user'] = self.add_user
     
     def cs_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Shadow module", attribute, "=", value
@@ -39,6 +43,34 @@ class Shadow(Module):
         cs = ChangeSet(Change(self.name, "add_user", args))
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs
+    
+    def add_user(self, change):        
+        cmd = [USERADD]
+        
+        cmd.extend(['--comment', change.parameters['name']])
+        cmd.extend(['--home-dir', change.parameters['homedir']])
+        if change.parameters['expire'] > 0:
+            expiredate = date.today() + timedelta(change.parameters['expire'])
+            cmd.extend(['--expiredate', expiredate.isoformat()])
+        cmd.extend(['--inactive', str(change.parameters['inactive'])])
+        cmd.extend(['--gid', change.parameters['group']])
+        if change.parameters['extragroups']:
+            cmd.extend(['--groups', ','.join(change.parameters['extragroups'])])
+        cmd.extend(['--skel', change.parameters['skeleton']])
+        cmd.extend(['--key', 'UID_MIN=' + str(change.parameters['uid_min'])])
+        cmd.extend(['--key', 'UID_MAX=' + str(change.parameters['uid_max'])])
+        if change.parameters['create_homedir']:
+            cmd.append('--create-home')
+        if change.parameters['usergroups']:
+            cmd.append('--user-group')
+        else:
+            cmd.append('--no-user-group')
+        # --password
+        cmd.extend(['--shell', change.parameters['shell']])
+        
+        cmd.append(change.parameters['username'])
+        
+        return self.execute(cmd)
 
     def set_default(self, change):
         return syspolicy.change.STATE_COMPLETED
