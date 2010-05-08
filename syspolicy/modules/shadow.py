@@ -11,6 +11,8 @@ from syspolicy.modules.module import Module
 USERADD = '/usr/sbin/useradd'
 USERMOD = '/usr/sbin/usermod'
 USERDEL = '/usr/sbin/userdel'
+GROUPADD = '/usr/sbin/groupadd'
+GROUPDEL = '/usr/sbin/groupdel'
 
 class Shadow(Module):
     def __init__(self):
@@ -22,6 +24,8 @@ class Shadow(Module):
         self.change_operations['add_user'] = self.add_user
         self.change_operations['mod_user'] = self.mod_user
         self.change_operations['del_user'] = self.del_user
+        self.change_operations['add_group'] = self.add_group
+        self.change_operations['del_group'] = self.del_group
     
     def cs_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Shadow module", attribute, "=", value
@@ -79,6 +83,16 @@ class Shadow(Module):
         
         cs = ChangeSet(Change(self.name, "del_user", args))
         self.pt.emit_event(syspolicy.event.USER_REMOVED, cs)
+        return cs
+    
+    def cs_add_group(self, group):
+        cs = ChangeSet(Change(self.name, "add_group", {'group': group}))
+        self.pt.emit_event(syspolicy.event.GROUP_ADDED, cs)
+        return cs
+    
+    def cs_del_group(self, group):
+        cs = ChangeSet(Change(self.name, "del_group", {'group': group}))
+        self.pt.emit_event(syspolicy.event.GROUP_REMOVED, cs)
         return cs
     
     def add_user(self, change):
@@ -142,6 +156,17 @@ class Shadow(Module):
         cmd = [USERDEL]
         cmd.append(p['username'])
         
+        return self.execute(cmd)
+    
+    def add_group(self, change):
+        p = change.parameters
+        cmd = [GROUPADD]
+        cmd.append(p['group'])
+        
+        return self.execute(cmd)
+    
+    def del_group(self, change):
+        cmd = [GROUPDEL, change.parameters['group']]
         return self.execute(cmd)
 
 

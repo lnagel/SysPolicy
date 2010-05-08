@@ -71,6 +71,12 @@ def main():
     elif opts.del_user is not None:
         cs = pt.module['shadow'].cs_del_user(username=opts.del_user)
         pt.add_changeset(cs)
+    elif opts.add_group is not None:
+        cs = pt.module['shadow'].cs_add_group(group=opts.add_group)
+        pt.add_changeset(cs)
+    elif opts.del_group is not None:
+        cs = pt.module['shadow'].cs_del_group(group=opts.del_group)
+        pt.add_changeset(cs)
     
     print "------- ChangeSets -------"
     with pt.cs_mlock:
