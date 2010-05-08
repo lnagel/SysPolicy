@@ -41,6 +41,9 @@ class Quota(Module):
                     cs.append(c)
         return cs
     
+    def handle_event(self, event, changeset):
+        print "Quota module caught event", event, "with changeset", changeset
+    
     def set_quota(self, change):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>
         # <block-softlimit> <block-hardlimit> <inode-softlimit> <inode-hardlimit> -a|<filesystem>

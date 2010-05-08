@@ -75,6 +75,11 @@ class PolicyTool:
         self.events[event].append(module)
         print "Registered event", str(event), "to", module
     
+    def emit_event(self, event, changeset=None):
+        if event in self.events:
+            for module in self.events[event]:
+                module.handle_event(event, changeset)
+    
     def get_policy_diff(self):
         diff = {}
         for type in self.policy:

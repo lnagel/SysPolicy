@@ -57,6 +57,9 @@ class Module:
     def cs_rem_attribute(self, group, attribute, value, diff):
         return None
     
+    def handle_event(self, event, changeset):
+        pass
+    
     def perform_change(self, change):
         if change.operation in self.change_operations:
             return self.change_operations[change.operation](change)

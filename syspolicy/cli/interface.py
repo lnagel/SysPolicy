@@ -20,6 +20,7 @@ def main():
         parser.error("You have to specify exactly 1 run mode option")
     
     pt = PolicyTool(opts.config)
+    cs = None
 
     if opts.mode_update:
         print "update mode!"
@@ -27,6 +28,10 @@ def main():
     elif opts.mode_scan:
         # TODO: Implement the scan mode
         parser.error("Sorry, the scan mode isn't supported yet")
+    elif opts.add_user is not None:
+        print "add user mode!"
+        cs = pt.module['shadow'].cs_add_user(username=opts.add_user, group=opts.group)
+        pt.add_changeset(cs)
     
     print "------- ChangeSets -------"
     with pt.cs_mlock:

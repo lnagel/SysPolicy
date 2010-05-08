@@ -1,6 +1,7 @@
 
 import pwd, grp
 import syspolicy.change
+import syspolicy.event
 from syspolicy.change import Change, ChangeSet
 from syspolicy.modules.module import Module
 
@@ -20,6 +21,11 @@ class Shadow(Module):
     def cs_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Shadow module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
+    
+    def cs_add_user(self, username, group):
+        cs = ChangeSet(Change(self.name, "add_user", {'username': username, 'group': group}))
+        self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
+        return cs
 
     def set_default(self, change):
         return syspolicy.change.STATE_COMPLETED
