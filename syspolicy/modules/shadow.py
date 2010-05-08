@@ -12,13 +12,8 @@ class Shadow(Module):
         Module.__init__(self)
         self.name = "shadow"
         self.handled_attributes['groups'] = ['uid_min', 'uid_max',
-                'usergroups', 'grouphomes', 'basedir',
+                'usergroups', 'grouphomes', 'basedir', 'create_homedir', 
                 'shell', 'skeleton', 'expire', 'inactive']
-        self.change_operations['set_default'] = self.set_default
-    
-    def cs_set_default(self, attribute, value, diff):
-        print "Setting new default in the Shadow module", attribute, "=", value
-        return ChangeSet(Change("shadow", "set_default", {attribute: value}))
     
     def cs_set_attribute(self, group, attribute, value, diff):
         print "Setting attribute value in the Shadow module", attribute, "=", value
