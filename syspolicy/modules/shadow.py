@@ -117,7 +117,8 @@ class Shadow(Module):
             cmd.append('--user-group')
         else:
             cmd.append('--no-user-group')
-        # --password
+        if 'password' in p:
+            cmd.extend(['--password', p['password']])
         cmd.extend(['--shell', p['shell']])
         
         cmd.append(p['username'])
@@ -143,7 +144,8 @@ class Shadow(Module):
             cmd.extend(['--groups', ','.join(p['extragroups'])])
         # --append ?
         # --move-home
-        # --password
+        if 'password' in p:
+            cmd.extend(['--password', p['password']])
         if 'shell' in p:
             cmd.extend(['--shell', p['shell']])
         
