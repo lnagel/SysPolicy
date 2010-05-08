@@ -24,6 +24,9 @@ def main():
     if opts.mode_update:
         print "update mode!"
         pt.get_policy_updates()
+    elif opts.mode_scan:
+        # TODO: Implement the scan mode
+        parser.error("Sorry, the scan mode isn't supported yet")
     
     print "------- ChangeSets -------"
     with pt.cs_mlock:
