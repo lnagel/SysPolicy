@@ -1,6 +1,7 @@
 
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
+import syspolicy.event
 from syspolicy.modules.module import Module
 import syspolicy.modules.shadow as shadow
 import re
@@ -14,6 +15,9 @@ class Quota(Module):
         self.name = "quota"
         self.handled_attributes['groups'] = ['userquota', 'groupquota']
         self.change_operations['set_quota'] = self.set_quota
+        self.event_hooks.append(syspolicy.event.USER_ADDED)
+        self.event_hooks.append(syspolicy.event.USER_MODIFIED)
+        self.event_hooks.append(syspolicy.event.USER_REMOVED)
     
     def pol_rem_attribute(self, group, attribute, value, diff):
         if attribute in self.handled_attributes['groups']:

@@ -20,6 +20,7 @@ class Module:
                         }
         self.change_operations = {}
         self.change_operations['edit_configfile'] = self.edit_configfile
+        self.event_hooks = []
 
     def pol_check_diff(self, policy, operation, path, value, diff):
         print "pol_check_diff in:", policy, "operation:", operation, "for:", path, ",", diff

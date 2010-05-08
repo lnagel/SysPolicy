@@ -18,6 +18,7 @@ class PolicyTool:
         self.policy = {}
         self.state = {}
         self.handler = {}
+        self.events = {}
         for type, file in self.conf.get(['policy']).items():
             self.policy[type] = Policy(type, self.conf.get(['general', 'policy-path'])+'/'+file, merge_default=True)
             try:
@@ -54,6 +55,8 @@ class PolicyTool:
                 for policy_type, attributes in module.handled_attributes.items():
                     for attribute in attributes:
                         self.register_handler(policy_type, attribute, module)
+                for event in module.event_hooks:
+                    self.register_event(event, module)
             else:
                 print module, "has already been registered with", module.pt
     
@@ -65,6 +68,12 @@ class PolicyTool:
             print "Registered handler: policy", policy_type, "attribute", attribute, "to", module
         else:
             raise Exception("Handler has already been set for policy '" + policy_type + "' attribute '" + attribute + "'")
+    
+    def register_event(self, event, module):
+        if event not in self.events:
+            self.events[event] = []
+        self.events[event].append(module)
+        print "Registered event", str(event), "to", module
     
     def get_policy_diff(self):
         diff = {}
