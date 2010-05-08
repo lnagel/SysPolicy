@@ -3,8 +3,10 @@ import syspolicy.change
 from syspolicy.change import Change, ChangeSet
 import syspolicy.event
 from syspolicy.modules.module import Module
+from syspolicy.config import compare_trees
 import syspolicy.modules.shadow as shadow
 import re
+import copy
 
 SETQUOTA = "/usr/sbin/setquota"
 
@@ -14,9 +16,9 @@ class Quota(Module):
         self.name = "quota"
         self.handled_attributes['groups'] = ['userquota', 'groupquota']
         self.change_operations['set_quota'] = self.set_quota
-        self.event_hooks[syspolicy.event.USER_ADDED] = self.handle_event
-        self.event_hooks[syspolicy.event.USER_MODIFIED] = self.handle_event
-        self.event_hooks[syspolicy.event.USER_REMOVED] = self.handle_event
+        self.event_hooks[syspolicy.event.USER_ADDED] = self.event_user_added
+        self.event_hooks[syspolicy.event.USER_MODIFIED] = self.event_user_modified
+        self.event_hooks[syspolicy.event.USER_REMOVED] = self.event_user_removed
     
     def cs_rem_attribute(self, group, attribute, value, diff):
         if attribute in self.handled_attributes['groups']:
@@ -41,13 +43,41 @@ class Quota(Module):
             changes.append(c)
         return changes
     
-    def handle_event(self, event, changeset):
+    def event_user_added(self, event, changeset):
         print "Quota module caught event", event, "with changeset", changeset
         for change in changeset.changes:
             if change.operation == 'add_user':
                 group = change.parameters['group']
                 userquota = self.pt.policy['groups'].get([group, 'userquota'])
                 changeset.extend(self.c_set_quota(userquota, 'user', change.parameters['username']))
+    
+    def event_user_modified(self, event, changeset):
+        print "Quota module caught event", event, "with changeset", changeset
+        for change in changeset.changes:
+            if change.operation == 'mod_user':
+                group = change.parameters['group']
+                oldgroup = change.parameters['oldgroup']
+                gpol = self.pt.policy['groups']
+                
+                userquota = gpol.get([group, 'userquota'])
+                olduserquota = gpol.get([oldgroup, 'userquota'])
+                
+                quota = compare_trees(userquota, olduserquota)
+                changeset.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
+    
+    def event_user_removed(self, event, changeset):
+        print "Quota module caught event", event, "with changeset", changeset
+        for change in changeset.changes:
+            if change.operation == 'del_user':
+                group = change.parameters['group']
+                gpol = self.pt.policy['groups']                
+                quota = copy.copy(gpol.get([group, 'userquota']))
+                for fs in quota:
+                    quota[fs] = 0
+                
+                changes = self.c_set_quota(quota, 'user', change.parameters['username'])
+                for c in changes.reverse():
+                    changeset.insert(0, c)
     
     def set_quota(self, change):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>
