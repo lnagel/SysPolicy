@@ -44,6 +44,33 @@ def main():
                             homedir=opts.homedir, 
                             policy=policy)
         pt.add_changeset(cs)
+    elif opts.mod_user is not None:
+        print "mod user mode!"
+        policy = parser.parse_policy(opts)
+        
+        # check if editing groups is requested
+        if opts.group is not None:
+            if type(opts.group) != list or len(opts.group) < 1:
+                parser.error("You have to specify at least 1 group")
+            
+            group = opts.group.pop(0)
+            
+            cs = pt.module['shadow'].cs_mod_user(username=opts.mod_user,
+                                group=group,
+                                extragroups=opts.group, 
+                                name=opts.name, 
+                                homedir=opts.homedir, 
+                                policy=policy)
+        else:
+            cs = pt.module['shadow'].cs_mod_user(username=opts.mod_user,
+                                name=opts.name, 
+                                homedir=opts.homedir, 
+                                policy=policy)
+        
+        pt.add_changeset(cs)
+    elif opts.del_user is not None:
+        cs = pt.module['shadow'].cs_del_user(username=opts.del_user)
+        pt.add_changeset(cs)
     
     print "------- ChangeSets -------"
     with pt.cs_mlock:

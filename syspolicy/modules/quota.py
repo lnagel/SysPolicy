@@ -67,6 +67,7 @@ class Quota(Module):
     
     def event_user_removed(self, event, changeset):
         print "Quota module caught event", event, "with changeset", changeset
+        changes = []
         for change in changeset.changes:
             if change.operation == 'del_user':
                 group = change.parameters['group']
@@ -74,10 +75,11 @@ class Quota(Module):
                 quota = copy.copy(gpol.get([group, 'userquota']))
                 for fs in quota:
                     quota[fs] = 0
-                
-                changes = self.c_set_quota(quota, 'user', change.parameters['username'])
-                for c in changes.reverse():
-                    changeset.insert(0, c)
+                changes.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
+        
+        changes.reverse()
+        for c in changes:
+            changeset.insert(0, c)
     
     def set_quota(self, change):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>

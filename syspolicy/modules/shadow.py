@@ -44,8 +44,11 @@ class Shadow(Module):
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs
     
-    def cs_mod_user(self, username, group, oldgroup, extragroups=[],
+    def cs_mod_user(self, username, group, extragroups=[],
                     name=None, homedir=None, policy={}):
+        # retrieve information about the users current group
+        oldgid = get_user_by_name(username).pw_gid
+        oldgroup = get_group_by_id(oldgid).gr_name
         
         args = {'username': username, 'group': group, 'name': name,
                 'oldgroup': oldgroup, 'extragroups': extragroups,
@@ -53,6 +56,17 @@ class Shadow(Module):
         
         cs = ChangeSet(Change(self.name, "mod_user", args))
         self.pt.emit_event(syspolicy.event.USER_MODIFIED, cs)
+        return cs
+    
+    def cs_del_user(self, username):
+        # retrieve information about the users current group
+        gid = get_user_by_name(username).pw_gid
+        group = get_group_by_id(gid).gr_name
+        
+        args = {'username': username, 'group': group}
+        
+        cs = ChangeSet(Change(self.name, "del_user", args))
+        self.pt.emit_event(syspolicy.event.USER_REMOVED, cs)
         return cs
     
     def add_user(self, change):
