@@ -10,7 +10,6 @@ class OptParser(OptionParser):
         self.set_defaults(config='config/main.conf')
         self.set_defaults(mode_update=False)
         self.set_defaults(mode_scan=False)
-        self.set_defaults(create_homedir=True)
 
         self.add_option("-c", "--config",
                 dest="config", metavar="FILE", 
@@ -73,7 +72,24 @@ class OptParser(OptionParser):
                 dest="shell", metavar="SHELL", 
                 help="override the login shell")
         user.add_option("-U", "--user-group",
-                dest="usergroup", action="store_true", 
+                dest="usergroups", action="store_true", 
                 help="create a user group")
         self.add_option_group(user)
-
+    
+    def parse_policy(self, opts):
+        policy = {}
+        if opts.basedir is not None:
+            policy['basedir'] = opts.basedir
+        if opts.expire is not None:
+            policy['expire'] = int(opts.expire)
+        if opts.inactive is not None:
+            policy['inactive'] = int(opts.inactive)
+        if opts.skeleton is not None:
+            policy['skeleton'] = opts.skeleton
+        if opts.create_homedir is not None:
+            policy['create_homedir'] = opts.create_homedir
+        if opts.shell is not None:
+            policy['shell'] = opts.shell
+        if opts.usergroups is not None:
+            policy['usergroups'] = opts.usergroups
+        return policy

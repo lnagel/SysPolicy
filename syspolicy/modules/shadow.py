@@ -1,8 +1,10 @@
 
 import pwd, grp
+import copy
 import syspolicy.change
 import syspolicy.event
 from syspolicy.change import Change, ChangeSet
+from syspolicy.policy import merge_into
 from syspolicy.modules.module import Module
 
 class Shadow(Module):
@@ -22,8 +24,24 @@ class Shadow(Module):
         print "Setting attribute value in the Shadow module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
     
-    def cs_add_user(self, username, group, extragroups):
-        cs = ChangeSet(Change(self.name, "add_user", {'username': username, 'group': group}))
+    def cs_add_user(self, username, group, extragroups=[],
+                    name=None, homedir=None, policy={}):
+        
+        upolicy = copy.deepcopy(self.pt.policy['groups'].get([group]))
+        args = {'username': username, 'group': group, 'name': name,
+                'extragroups': extragroups, 'homedir': homedir}
+        
+        upolicy = merge_into(upolicy, policy)
+        args = merge_into(upolicy, args)
+        
+        if args['grouphomes'] == True:
+            args['basedir'] = args['basedir'] + '/' + args['group']
+        if args['name'] is None:
+            args['name'] = ''
+        if args['homedir'] is None:
+            args['homedir'] = args['basedir'] + '/' + args['username']
+        
+        cs = ChangeSet(Change(self.name, "add_user", args))
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs
 

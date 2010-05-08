@@ -34,7 +34,14 @@ def main():
             parser.error("You have to specify at least 1 group")
         
         group = opts.group.pop(0)
-        cs = pt.module['shadow'].cs_add_user(username=opts.add_user, group=group, extragroups=opts.group)
+        policy = parser.parse_policy(opts)
+        
+        cs = pt.module['shadow'].cs_add_user(username=opts.add_user,
+                            group=group,
+                            extragroups=opts.group, 
+                            name=opts.name, 
+                            homedir=opts.homedir, 
+                            policy=policy)
         pt.add_changeset(cs)
     
     print "------- ChangeSets -------"
