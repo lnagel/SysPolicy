@@ -22,7 +22,7 @@ class Shadow(Module):
         print "Setting attribute value in the Shadow module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
     
-    def cs_add_user(self, username, group):
+    def cs_add_user(self, username, group, extragroups):
         cs = ChangeSet(Change(self.name, "add_user", {'username': username, 'group': group}))
         self.pt.emit_event(syspolicy.event.USER_ADDED, cs)
         return cs

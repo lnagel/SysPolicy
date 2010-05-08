@@ -30,7 +30,11 @@ def main():
         parser.error("Sorry, the scan mode isn't supported yet")
     elif opts.add_user is not None:
         print "add user mode!"
-        cs = pt.module['shadow'].cs_add_user(username=opts.add_user, group=opts.group)
+        if type(opts.group) != list or len(opts.group) < 1:
+            parser.error("You have to specify at least 1 group")
+        
+        group = opts.group.pop(0)
+        cs = pt.module['shadow'].cs_add_user(username=opts.add_user, group=group, extragroups=opts.group)
         pt.add_changeset(cs)
     
     print "------- ChangeSets -------"

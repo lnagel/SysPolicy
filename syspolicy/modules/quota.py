@@ -43,6 +43,16 @@ class Quota(Module):
     
     def handle_event(self, event, changeset):
         print "Quota module caught event", event, "with changeset", changeset
+        for change in changeset.changes:
+            if change.operation == 'add_user':
+                group = change.parameters['group']
+                userquota = self.pt.policy['groups'].get([group, 'userquota']).items()
+                print userquota
+                for fs, quota in userquota:
+                    c = Change(self.name, "set_quota",
+                            {'type': 'user', 'object': change.parameters['username'],
+                                'block-hardlimit': kilobytes(quota), 'filesystem': fs})
+                    changeset.append(c)
     
     def set_quota(self, change):
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>
