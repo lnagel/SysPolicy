@@ -26,8 +26,13 @@ class Shadow(Module):
         self.change_operations['del_group'] = self.del_group
     
     def cs_set_attribute(self, group, attribute, value, diff):
-        print "Setting attribute value in the Shadow module", attribute, "=", value
-        return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
+        cs = ChangeSet()
+        p = {attribute: value}
+        if attribute in ['shell', 'inactive'] and group_exists(group):
+            gid = get_group_by_name(group).gr_gid
+            for user in list_users_with_gid(gid):
+                cs.merge(self.cs_mod_user(user.pw_name, policy=p))
+        return cs
     
     def cs_add_user(self, username, group, password, extragroups=[],
                     name=None, homedir=None, policy={}):
@@ -192,6 +197,9 @@ def get_group_by_id(name):
 
 def get_group_by_name(name):
     return grp.getgrnam(name)
+
+def group_exists(name):
+    return grp.getgrnam(name) is not None
 
 def get_user_by_name(name):
     return pwd.getpwnam(name)

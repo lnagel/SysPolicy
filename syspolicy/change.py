@@ -78,3 +78,5 @@ class ChangeSet:
     def extend(self, changes):
         self.changes.extend(changes)
     
+    def merge(self, changeset):
+        self.changes.extend(changeset.changes)
