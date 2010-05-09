@@ -18,9 +18,7 @@ class Shadow(Module):
     def __init__(self):
         Module.__init__(self)
         self.name = "shadow"
-        self.handled_attributes['groups'] = ['uid_min', 'uid_max',
-                'usergroups', 'grouphomes', 'basedir', 'create_homedir', 
-                'shell', 'skeleton', 'expire', 'inactive']
+        self.handled_attributes['groups'] = ['shell', 'inactive']
         self.change_operations['add_user'] = self.add_user
         self.change_operations['mod_user'] = self.mod_user
         self.change_operations['del_user'] = self.del_user
