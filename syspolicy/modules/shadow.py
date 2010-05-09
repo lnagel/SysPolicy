@@ -53,7 +53,7 @@ class Shadow(Module):
         return cs
     
     def cs_mod_user(self, username, group=None, extragroups=[],
-                    name=None, homedir=None, policy={}):
+                    password=None, name=None, homedir=None, policy={}):
         # retrieve information about the users current group
         oldgid = get_user_by_name(username).pw_gid
         oldgroup = get_group_by_id(oldgid).gr_name
@@ -65,6 +65,8 @@ class Shadow(Module):
             args['group'] = group
             args['oldgroup'] = oldgroup
             args['extragroups'] = extragroups
+        if password is not None:
+            args['password'] = password
         if name is not None:
             args['name'] = name
         if homedir is not None:

@@ -75,6 +75,9 @@ class OptParser(OptionParser):
         user.add_option("-s", "--shell",
                 dest="shell", metavar="SHELL", 
                 help="override the login shell")
+        user.add_option("-p", "--password",
+                dest="password", action="store_true", 
+                help="prompt for a new password")
         user.add_option("-U", "--user-group",
                 dest="usergroups", action="store_true", 
                 help="create a user group")

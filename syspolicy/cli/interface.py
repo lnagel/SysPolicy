@@ -50,6 +50,10 @@ def main():
     elif opts.mod_user is not None:
         print "mod user mode!"
         policy = parser.parse_policy(opts)
+        password = None
+        
+        if opts.password:
+            password = setpwd(shadow.get_password_policy())
         
         # check if editing groups is requested
         if opts.group is not None:
@@ -61,12 +65,14 @@ def main():
             cs = shadow.cs_mod_user(username=opts.mod_user,
                                 group=group,
                                 extragroups=opts.group, 
-                                name=opts.name, 
+                                name=opts.name,
+                                password=password, 
                                 homedir=opts.homedir, 
                                 policy=policy)
         else:
             cs = shadow.cs_mod_user(username=opts.mod_user,
                                 name=opts.name, 
+                                password=password, 
                                 homedir=opts.homedir, 
                                 policy=policy)
         
