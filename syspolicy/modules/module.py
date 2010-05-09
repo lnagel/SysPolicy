@@ -151,7 +151,7 @@ class Module:
     
     def execute(self, cmd=[]):
         if self.pt.debug:
-            cmd = ['/usr/bin/echo'] + cmd
+            cmd = ['/bin/echo'] + cmd
         
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdout, stderr) = p.communicate()
