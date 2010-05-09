@@ -21,6 +21,7 @@ def main():
     
     pt = PolicyTool(opts.config)
     pt.debug = opts.debug
+    shadow = pt.module['shadow']
     cs = None
 
     if opts.mode_update:
@@ -34,11 +35,11 @@ def main():
         if type(opts.group) != list or len(opts.group) < 1:
             parser.error("You have to specify at least 1 group")
         
-        password = setpwd(pt.module['shadow'].get_password_policy())
+        password = setpwd(shadow.get_password_policy())
         group = opts.group.pop(0)
         policy = parser.parse_policy(opts)
         
-        cs = pt.module['shadow'].cs_add_user(username=opts.add_user,
+        cs = shadow.cs_add_user(username=opts.add_user,
                             group=group,
                             extragroups=opts.group, 
                             name=opts.name, 
@@ -57,27 +58,27 @@ def main():
             
             group = opts.group.pop(0)
             
-            cs = pt.module['shadow'].cs_mod_user(username=opts.mod_user,
+            cs = shadow.cs_mod_user(username=opts.mod_user,
                                 group=group,
                                 extragroups=opts.group, 
                                 name=opts.name, 
                                 homedir=opts.homedir, 
                                 policy=policy)
         else:
-            cs = pt.module['shadow'].cs_mod_user(username=opts.mod_user,
+            cs = shadow.cs_mod_user(username=opts.mod_user,
                                 name=opts.name, 
                                 homedir=opts.homedir, 
                                 policy=policy)
         
         pt.add_changeset(cs)
     elif opts.del_user is not None:
-        cs = pt.module['shadow'].cs_del_user(username=opts.del_user)
+        cs = shadow.cs_del_user(username=opts.del_user)
         pt.add_changeset(cs)
     elif opts.add_group is not None:
-        cs = pt.module['shadow'].cs_add_group(group=opts.add_group)
+        cs = shadow.cs_add_group(group=opts.add_group)
         pt.add_changeset(cs)
     elif opts.del_group is not None:
-        cs = pt.module['shadow'].cs_del_group(group=opts.del_group)
+        cs = shadow.cs_del_group(group=opts.del_group)
         pt.add_changeset(cs)
     
     print "------- ChangeSets -------"
