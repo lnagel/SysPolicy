@@ -23,6 +23,7 @@ def main():
     pt.debug = opts.debug
     shadow = pt.module['shadow']
     cs = None
+    password = None
 
     if opts.mode_update:
         print "update mode!"
@@ -35,7 +36,8 @@ def main():
         if type(opts.group) != list or len(opts.group) < 1:
             parser.error("You have to specify at least 1 group")
         
-        password = setpwd(shadow.get_password_policy())
+        if opts.password:
+            password = setpwd(shadow.get_password_policy())
         group = opts.group.pop(0)
         policy = parser.parse_policy(opts)
         
@@ -50,7 +52,6 @@ def main():
     elif opts.mod_user is not None:
         print "mod user mode!"
         policy = parser.parse_policy(opts)
-        password = None
         
         if opts.password:
             password = setpwd(shadow.get_password_policy())
