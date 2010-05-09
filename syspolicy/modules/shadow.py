@@ -68,6 +68,8 @@ class Shadow(Module):
             args['group'] = group
             args['oldgroup'] = oldgroup
             args['extragroups'] = extragroups
+            # TODO: add other attribs from new group policy
+            # like shell, expiry, inactive, ..
         if password is not None:
             args['password'] = password
         if name is not None:
