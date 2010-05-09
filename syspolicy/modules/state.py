@@ -9,7 +9,13 @@ class State(Module):
         Module.__init__(self)
         self.name = "state"
         self.change_operations['set_state'] = self.set_state
-
+    
+    def cs_check_diff(self, policy, operation, path, value, diff):
+        state_update = Change(self.name, "set_state", 
+                             {"policy": policy, "path": path,
+                                "value": value, "diff_type": operation})
+        return ChangeSet(state_update)
+    
     def set_state(self, change):
         p = change.parameters
         policy = p['policy']

@@ -89,27 +89,28 @@ class PolicyTool:
     
     def get_policy_updates(self):
         diff = self.get_policy_diff()
+        fallback = self.module['state']
         print "Diff:", diff
         for type, policy in diff.items():
-            if type in self.handler:
-                for group_name, group in policy.items():
-                    for attribute, valuediff in group.items():
-                        if attribute in self.handler[type]:
-                            h = self.handler[type][attribute]
-                            path = [group_name, attribute]
-                            print "Found a handler for", type, "->", path, ":", h
-                            if group_name not in self.policy[type].data:
-                                value = None
-                                operation = syspolicy.config.CONFIG_REMOVED
-                            else:
-                                value = self.policy[type].get(path)
-                                operation = syspolicy.config.diff_type(policy, self.state[type], path)
-                            cs = h.cs_check_diff(self.policy[type].name, operation, path, value, valuediff)
-                            if cs is not None:
-                                self.add_changeset(cs)
-                        else:
-                            print "Didn't find a handler for", type, "->", group_name, "->", attribute
-                        print "-" * 40
+            for group_name, group in policy.items():
+                for attribute, valuediff in group.items():
+                    if type in self.handler:
+                        h = self.handler[type].get(attribute, fallback)
+                    else:
+                        h = fallback
+                    path = [group_name, attribute]
+                    print "Handler for", type, "->", path, ":", h
+                    # check if the whole group was removed
+                    if group_name not in self.policy[type].data:
+                        value = None
+                        operation = syspolicy.config.CONFIG_REMOVED
+                    else:
+                        value = self.policy[type].get(path)
+                        operation = syspolicy.config.diff_type(policy, self.state[type], path)
+                    cs = h.cs_check_diff(self.policy[type].name, operation, path, value, valuediff)
+                    if cs is not None:
+                        self.add_changeset(cs)
+                    print "-" * 40
         return self.changesets
     
     def get_cs_lock(self, changeset):
