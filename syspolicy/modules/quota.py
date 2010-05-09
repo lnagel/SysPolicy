@@ -29,9 +29,12 @@ class Quota(Module):
         if attribute == 'groupquota':
             cs.extend(self.c_set_quota(diff, 'group', group))
         elif attribute == 'userquota':
-            gid = shadow.get_group_by_name(group).gr_gid
-            for user in shadow.list_users_with_gid(gid):
-                cs.extend(self.c_set_quota(diff, 'user', user.pw_name))
+            try:
+                gid = shadow.get_group_by_name(group).gr_gid
+                for user in shadow.list_users_with_gid(gid):
+                    cs.extend(self.c_set_quota(diff, 'user', user.pw_name))
+            except:
+                pass
         return cs
     
     def c_set_quota(self, quota, type, object):
