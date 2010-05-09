@@ -142,7 +142,10 @@ class Module:
         temp_file.writelines(dst)
         temp_file.close()
         
-        os.rename(temp_file.name, configfile)
+        if self.pt.debug:
+            os.remove(temp_file.name)
+        else:
+            os.rename(temp_file.name, configfile)
         
         return True
     
