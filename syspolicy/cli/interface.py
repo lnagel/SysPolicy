@@ -4,7 +4,7 @@
 from __future__ import with_statement
 
 from syspolicy.policytool import PolicyTool
-from syspolicy.cli.prompt import confirm
+from syspolicy.cli.prompt import confirm, setpwd
 import yaml
 from syspolicy.cli.arguments import OptParser
 
@@ -34,6 +34,7 @@ def main():
         if type(opts.group) != list or len(opts.group) < 1:
             parser.error("You have to specify at least 1 group")
         
+        password = setpwd(pt.module['shadow'].get_password_policy())
         group = opts.group.pop(0)
         policy = parser.parse_policy(opts)
         
@@ -42,6 +43,7 @@ def main():
                             extragroups=opts.group, 
                             name=opts.name, 
                             homedir=opts.homedir, 
+                            password=password, 
                             policy=policy)
         pt.add_changeset(cs)
     elif opts.mod_user is not None:

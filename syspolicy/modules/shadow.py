@@ -31,12 +31,12 @@ class Shadow(Module):
         print "Setting attribute value in the Shadow module", attribute, "=", value
         return ChangeSet(Change(self.name, "set_attribute", {'group': group, 'attribute': attribute, 'value': value}))
     
-    def cs_add_user(self, username, group, extragroups=[],
+    def cs_add_user(self, username, group, password, extragroups=[],
                     name=None, homedir=None, policy={}):
         
         upolicy = copy.deepcopy(self.pt.policy['groups'].get([group]))
         args = {'username': username, 'group': group, 'name': name,
-                'extragroups': extragroups, 'homedir': homedir}
+                'extragroups': extragroups, 'homedir': homedir, 'password': password}
         
         upolicy = merge_into(upolicy, policy)
         args = merge_into(upolicy, args)
@@ -170,6 +170,15 @@ class Shadow(Module):
     def del_group(self, change):
         cmd = [GROUPDEL, change.parameters['group']]
         return self.execute(cmd)
+    
+    def get_password_policy(self):
+        svcgroup = self.pt.conf.get(['module-pam', 'password'])
+        if svcgroup is None:
+            return {}
+        policy = self.pt.policy['services'].get([svcgroup, 'password'])
+        if policy is None:
+            return {}
+        return policy
 
 
 def list_groups():
