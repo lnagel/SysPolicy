@@ -5,6 +5,7 @@ from datetime import date, timedelta
 import syspolicy.change
 import syspolicy.event
 from syspolicy.change import Change, ChangeSet
+from syspolicy.config import compare_trees
 from syspolicy.policy import merge_into
 from syspolicy.modules.module import Module
 
@@ -68,8 +69,15 @@ class Shadow(Module):
             args['group'] = group
             args['oldgroup'] = oldgroup
             args['extragroups'] = extragroups
-            # TODO: add other attribs from new group policy
-            # like shell, expiry, inactive, ..
+            
+            npol = self.pt.policy['groups'].get([group])
+            opol = self.pt.policy['groups'].get([oldgroup])
+            diff = compare_trees(npol, opol)
+            
+            # if set, append these attributes
+            for attr in ['shell', 'inactive']:
+                if attr in diff:
+                    args[attr] = diff[attr]
         if password is not None:
             args['password'] = password
         if name is not None:
