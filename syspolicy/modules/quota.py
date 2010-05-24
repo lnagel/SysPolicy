@@ -57,15 +57,8 @@ class Quota(Module):
     def event_user_modified(self, event, changeset):
         print "Quota module caught event", event, "with changeset", changeset
         for change in changeset.changes:
-            if change.operation == 'mod_user' and 'group' in change.parameters:
-                group = change.parameters['group']
-                oldgroup = change.parameters['oldgroup']
-                gpol = self.pt.policy['groups']
-                
-                userquota = gpol.get([group, 'userquota'])
-                olduserquota = gpol.get([oldgroup, 'userquota'])
-                
-                quota = compare_trees(userquota, olduserquota)
+            if change.operation == 'mod_user' and 'group' in change.parameters and 'userquota' in change.parameters:
+                quota = change.parameters['userquota']
                 changeset.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
     
     def event_user_removed(self, event, changeset):

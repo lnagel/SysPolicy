@@ -74,10 +74,9 @@ class Shadow(Module):
             opol = self.pt.policy['groups'].get([oldgroup])
             diff = compare_trees(npol, opol)
             
-            # if set, append these attributes
-            for attr in ['shell', 'inactive']:
-                if attr in diff:
-                    args[attr] = diff[attr]
+            # merge in other changed attributes
+            for attr in diff:
+                args[attr] = diff[attr]
         if password is not None:
             args['password'] = password
         if name is not None:
