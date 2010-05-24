@@ -16,7 +16,7 @@ class Quota(Module):
         self.name = "quota"
         self.handled_attributes['groups'] = ['userquota', 'groupquota']
         self.change_operations['set_quota'] = self.set_quota
-        self.event_hooks[syspolicy.event.USER_ADDED] = self.event_user_added
+        self.event_hooks[syspolicy.event.USER_ADDED] = self.event_user_modified
         self.event_hooks[syspolicy.event.USER_MODIFIED] = self.event_user_modified
         self.event_hooks[syspolicy.event.USER_REMOVED] = self.event_user_removed
     
@@ -46,18 +46,10 @@ class Quota(Module):
             changes.append(c)
         return changes
     
-    def event_user_added(self, event, changeset):
-        print "Quota module caught event", event, "with changeset", changeset
-        for change in changeset.changes:
-            if change.operation == 'add_user':
-                group = change.parameters['group']
-                userquota = self.pt.policy['groups'].get([group, 'userquota'])
-                changeset.extend(self.c_set_quota(userquota, 'user', change.parameters['username']))
-    
     def event_user_modified(self, event, changeset):
         print "Quota module caught event", event, "with changeset", changeset
         for change in changeset.changes:
-            if change.operation == 'mod_user' and 'group' in change.parameters and 'userquota' in change.parameters:
+            if change.operation in ['add_user', 'mod_user'] and 'userquota' in change.parameters:
                 quota = change.parameters['userquota']
                 changeset.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
     
