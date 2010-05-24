@@ -92,8 +92,10 @@ class Shadow(Module):
         # retrieve information about the users current group
         gid = get_user_by_name(username).pw_gid
         group = get_group_by_id(gid).gr_name
+        gpolicy = copy.deepcopy(self.pt.policy['groups'].get([group]))
         
         args = {'username': username, 'group': group}
+        args = merge_into(gpolicy, args)
         
         cs = ChangeSet(Change(self.name, "del_user", args))
         self.pt.emit_event(syspolicy.event.USER_REMOVED, cs)

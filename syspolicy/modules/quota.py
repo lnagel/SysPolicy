@@ -57,10 +57,8 @@ class Quota(Module):
         print "Quota module caught event", event, "with changeset", changeset
         changes = []
         for change in changeset.changes:
-            if change.operation == 'del_user':
-                group = change.parameters['group']
-                gpol = self.pt.policy['groups']                
-                quota = copy.copy(gpol.get([group, 'userquota']))
+            if change.operation == 'del_user' and 'userquota' in change.parameters:            
+                quota = copy.copy(change.parameters['userquota'])
                 for fs in quota:
                     quota[fs] = 0
                 changes.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
