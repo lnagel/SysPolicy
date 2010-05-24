@@ -94,13 +94,24 @@ def setpwd(policy={}):
     default = genpass(size)
     
     print "The auto-generated password is '"+default+"'."
-    print "Salt: ", salt
-    print policy
-    input = getpass.getpass("Accept or enter another: ")
-    password = crypt.crypt(input, salt)
-    if checkpass(input, policy):
-        if input == getpass.getpass("Repeat password: "):
-            return password
+    print "Password policy:", policy
+    
+    try:
+        input = getpass.getpass("Accept default or enter another: ")
+    except:
+        input = ''
+    
+    while len(input) > 0:
+        try:
+            if checkpass(input, policy):
+                if input == getpass.getpass("Repeat password: "):
+                    return crypt.crypt(input, salt)
+                else:
+                    raise ValueError("the passwords don't match")
+        except Exception, e:
+            print "Invalid password:", e
+        
+        input = getpass.getpass("Enter new password: ")
 
     print "Accepted default"
     return crypt.crypt(default, salt)
