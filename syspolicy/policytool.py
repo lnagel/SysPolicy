@@ -13,9 +13,9 @@ from syspolicy.modules.module import Module
 from syspolicy.modules.autoloader import autoload_modules
 
 class PolicyTool:
-    def __init__(self, configfile):
+    def __init__(self, configfile, debug=False):
         self.conf = Config("main_config", configfile)
-        self.debug = False
+        self.debug = debug
         self.policy = {}
         self.state = {}
         self.handler = {}
@@ -48,7 +48,8 @@ class PolicyTool:
     
     def add_module(self, module):
         if isinstance(module, Module):
-            print module, "is a module!"
+            if self.debug:
+                print module, "is a module!"
             if module.pt is None:
                 module.pt = self
                 self.module[module.name] = module
@@ -66,7 +67,8 @@ class PolicyTool:
             self.handler[policy_type] = {}
         if attribute not in self.handler[policy_type]:
             self.handler[policy_type][attribute] = module
-            print "Registered handler: policy", policy_type, "attribute", attribute, "to", module
+            if self.debug:
+                print "Registered handler: policy", policy_type, "attribute", attribute, "to", module
         else:
             raise Exception("Handler has already been set for policy '" + policy_type + "' attribute '" + attribute + "'")
     
@@ -74,7 +76,8 @@ class PolicyTool:
         if event not in self.events:
             self.events[event] = []
         self.events[event].append(handler)
-        print "Registered event", str(event), "to", handler
+        if self.debug:
+            print "Registered event", str(event), "to", handler
     
     def emit_event(self, event, changeset=None):
         if event in self.events:

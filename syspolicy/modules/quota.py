@@ -47,14 +47,16 @@ class Quota(Module):
         return changes
     
     def event_user_modified(self, event, changeset):
-        print "Quota module caught event", event, "with changeset", changeset
+        if self.pt.debug:
+            print "Quota module caught event", event, "with changeset", changeset
         for change in changeset.changes:
             if change.operation in ['add_user', 'mod_user'] and 'userquota' in change.parameters:
                 quota = change.parameters['userquota']
                 changeset.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
     
     def event_user_removed(self, event, changeset):
-        print "Quota module caught event", event, "with changeset", changeset
+        if self.pt.debug:
+            print "Quota module caught event", event, "with changeset", changeset
         changes = []
         for change in changeset.changes:
             if change.operation == 'del_user' and 'userquota' in change.parameters:            
