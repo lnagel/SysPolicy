@@ -113,4 +113,13 @@ def main():
     
     pt.worker.queue.join()
     pt.save_state()
+    
+    print "------- %d processed ChangeSets -------" % len(accepted)
+    
+    for cs in accepted:
+        print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
+        descr = []
+        for c in cs.changes:
+            descr.append(c.subsystem + ":" + c.operation)
+        print ', '.join(descr), "=>", syspolicy.change._state_strings[cs.state]
 
