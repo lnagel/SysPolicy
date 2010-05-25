@@ -78,9 +78,6 @@ class OptParser(OptionParser):
         user.add_option("-p", "--password",
                 dest="password", action="store_true", 
                 help="prompt for a new password")
-        user.add_option("-U", "--user-group",
-                dest="usergroups", action="store_true", 
-                help="create a user group")
         self.add_option_group(user)
     
     def parse_policy(self, opts):
@@ -97,6 +94,4 @@ class OptParser(OptionParser):
             policy['create_homedir'] = opts.create_homedir
         if opts.shell is not None:
             policy['shell'] = opts.shell
-        if opts.usergroups is not None:
-            policy['usergroups'] = opts.usergroups
         return policy

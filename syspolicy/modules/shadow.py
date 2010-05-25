@@ -129,8 +129,6 @@ class Shadow(Module):
         cmd.extend(['--key', 'UID_MAX=' + str(p['uid_max'])])
         if p['create_homedir']:
             cmd.append('--create-home')
-        if p['usergroups']:
-            cmd.append('--user-group')
         else:
             cmd.append('--no-user-group')
         if 'password' in p and p['password'] is not None:
