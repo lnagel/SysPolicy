@@ -115,7 +115,8 @@ class Shadow(Module):
         p = change.parameters
         cmd = [USERADD]
         
-        cmd.extend(['--comment', p['name']])
+        if p['name']:
+            cmd.extend(['--comment', p['name']])
         cmd.extend(['--home-dir', p['homedir']])
         if p['expire'] > 0:
             expiredate = date.today() + timedelta(p['expire'])
