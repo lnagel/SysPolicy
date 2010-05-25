@@ -24,7 +24,8 @@ class Module:
         self.event_hooks = {}
 
     def cs_check_diff(self, policy, operation, path, value, diff):
-        print "cs_check_diff in:", policy, "operation:", operation, "for:", path, ",", diff
+        if self.pt.debug:
+            print "cs_check_diff in:", policy, "operation:", operation, "for:", path, ",", diff
         cs = None
         state_update = Change("state", "set_state", 
                              {"policy": policy, "path": path,
@@ -129,11 +130,12 @@ class Module:
         if not inserted:
             dst.extend(elines)
         
-        print
-        print 40 * "-"
-        for d in dst:
-            print d, 
-        print 40 * "-"
+        if self.pt.debug:
+            print
+            print 40 * "-"
+            for d in dst:
+                print d, 
+            print 40 * "-"
 
         basename = os.path.basename(configfile)
         basedir = os.path.dirname(configfile)

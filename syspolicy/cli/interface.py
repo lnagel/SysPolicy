@@ -26,7 +26,6 @@ def main():
     password = None
 
     if opts.mode_update:
-        print "update mode!"
         pt.get_policy_updates()
         pt.accept_state_changes()
     elif opts.mode_scan:
@@ -34,7 +33,6 @@ def main():
         pt.get_policy_updates()
         pt.accept_state_changes()
     elif opts.add_user is not None:
-        print "add user mode!"
         if type(opts.group) != list or len(opts.group) < 1:
             parser.error("You have to specify at least 1 group")
         
@@ -52,7 +50,6 @@ def main():
                             policy=policy)
         pt.add_changeset(cs)
     elif opts.mod_user is not None:
-        print "mod user mode!"
         policy = parser.parse_policy(opts)
         
         if opts.password:

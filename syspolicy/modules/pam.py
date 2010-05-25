@@ -16,8 +16,6 @@ class PAM(Module):
             return self.cs_set_attribute(group, attribute, [], diff)
     
     def cs_set_attribute(self, group, attribute, value, diff):
-        print "Setting attribute value in the PAM module", attribute, "=", value
-        
         configfile = self.pt.conf.get(['module-pam', 'pam-dir']) + '/' + group
         lines = []
         

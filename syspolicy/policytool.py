@@ -97,7 +97,8 @@ class PolicyTool:
     def get_policy_updates(self):
         diff = self.get_policy_diff()
         fallback = self.module['state']
-        print "Diff:", diff
+        if self.debug:
+            print "Diff:", diff
         for type, policy in diff.items():
             for group_name, group in policy.items():
                 for attribute, valuediff in group.items():
@@ -106,7 +107,8 @@ class PolicyTool:
                     else:
                         h = fallback
                     path = [group_name, attribute]
-                    print "Handler for", type, "->", path, ":", h
+                    if self.debug:
+                        print "Handler for", type, "->", path, ":", h
                     # check if the whole group was removed
                     if group_name not in self.policy[type].data:
                         value = None
@@ -117,7 +119,8 @@ class PolicyTool:
                     cs = h.cs_check_diff(self.policy[type].name, operation, path, value, valuediff)
                     if cs is not None:
                         self.add_changeset(cs)
-                    print "-" * 40
+                    if self.debug:
+                        print "-" * 40
         return self.changesets
     
     def get_cs_lock(self, changeset):
@@ -170,4 +173,5 @@ class PolicyTool:
     def enqueue_changesets(self, changesets):
         for cs in changesets:
             self.worker.queue.put(cs)
-            print "Adding ChangeSet", cs, "to the Worker's queue"
+            if self.debug:
+                print "Adding ChangeSet", cs, "to the Worker's queue"
