@@ -28,8 +28,8 @@ def main():
         print "update mode!"
         pt.get_policy_updates()
     elif opts.mode_scan:
-        # TODO: Implement the scan mode
-        parser.error("Sorry, the scan mode isn't supported yet")
+        pt.clear_state()
+        pt.get_policy_updates()
     elif opts.add_user is not None:
         print "add user mode!"
         if type(opts.group) != list or len(opts.group) < 1:
