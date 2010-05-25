@@ -46,6 +46,10 @@ class PolicyTool:
         for type, state in self.state.items():
             state.save()
     
+    def clear_state(self):
+        for type, state in self.state.items():
+            state.clear()
+    
     def add_module(self, module):
         if isinstance(module, Module):
             if self.debug:
