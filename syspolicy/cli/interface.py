@@ -3,6 +3,7 @@
 
 from __future__ import with_statement
 
+import syspolicy.change
 from syspolicy.policytool import PolicyTool
 from syspolicy.cli.prompt import confirm, setpwd
 import yaml
@@ -93,10 +94,14 @@ def main():
     with pt.cs_mlock:
         for cs in pt.changesets:
             print yaml.dump(cs)
-            pt.accept_changeset(cs, confirm("Approve this ChangeSet?"))
+            if cs.state == syspolicy.change.STATE_PROPOSED:
+                pt.accept_changeset(cs, confirm("Approve this ChangeSet?"))
+            print "==> This ChangeSet is", syspolicy.change._state_strings[cs.state]
+            print
     
-    if len(pt.changesets) > 0 and confirm("Enqueue %d ChangeSets?" % len(pt.changesets)):
-        pt.enqueue_changesets()
+    accepted = pt.changesets_with_state(syspolicy.change.STATE_ACCEPTED)
+    if len(accepted) > 0 and confirm("Enqueue %d ChangeSets?" % len(accepted)):
+        pt.enqueue_changesets(accepted)
     else:
         print "Nothing to do.."
     

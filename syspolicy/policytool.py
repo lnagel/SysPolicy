@@ -158,10 +158,16 @@ class PolicyTool:
                 if statechange:
                     self.accept_changeset(cs, True)
     
-    def enqueue_changesets(self):
+    def changesets_with_state(self, state):
+        results = []
         with self.cs_mlock:
             for cs in self.changesets:
                 with self.cs_locks[cs]:
-                    if cs.state == syspolicy.change.STATE_ACCEPTED:
-                        self.worker.queue.put(cs)
-                        print "Adding ChangeSet", cs, "to the Worker's queue"
+                    if cs.state == state:
+                        results.append(cs)
+        return results
+    
+    def enqueue_changesets(self, changesets):
+        for cs in changesets:
+            self.worker.queue.put(cs)
+            print "Adding ChangeSet", cs, "to the Worker's queue"
