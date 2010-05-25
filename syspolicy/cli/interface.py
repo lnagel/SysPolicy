@@ -97,6 +97,15 @@ def main():
             print
     
     accepted = pt.changesets_with_state(syspolicy.change.STATE_ACCEPTED)
+    print "------- %d accepted ChangeSets -------" % len(accepted)
+    
+    for cs in accepted:
+        print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
+        descr = []
+        for c in cs.changes:
+            descr.append(c.subsystem + ":" + c.operation)
+        print ', '.join(descr)
+    
     if len(accepted) > 0 and confirm("Enqueue %d ChangeSets?" % len(accepted)):
         pt.enqueue_changesets(accepted)
     else:
