@@ -162,9 +162,9 @@ class Module:
         if self.pt.debug:
             print '>>>', stdout, 
         
-        if stderr:
-            raise Exception(stderr)
-        elif p.returncode == 0:
+        if p.returncode == 0:
             return syspolicy.change.STATE_COMPLETED
+        elif stderr:
+            raise Exception(stderr)
         else:
             return syspolicy.change.STATE_FAILED
