@@ -144,6 +144,20 @@ class PolicyTool:
             with self.cs_locks[changeset]:
                 changeset.set_state(state)
     
+    def accept_state_changes(self):
+        with self.cs_mlock:
+            for cs in self.changesets:
+                statechange = False
+                with self.cs_locks[cs]:
+                    for c in cs.changes:
+                        if c.subsystem == 'state' and c.operation == 'set_state':
+                            statechange = True
+                        else:
+                            statechange = False
+                            break
+                if statechange:
+                    self.accept_changeset(cs, True)
+    
     def enqueue_changesets(self):
         with self.cs_mlock:
             for cs in self.changesets:
