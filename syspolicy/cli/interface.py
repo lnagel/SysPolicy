@@ -87,8 +87,9 @@ def main():
         cs = shadow.cs_del_group(group=opts.del_group)
         pt.add_changeset(cs)
     
-    print "------- ChangeSets -------"
     with pt.cs_mlock:
+        if len(pt.changesets) > 0:
+            print "------- ChangeSets -------"
         for cs in pt.changesets:
             print yaml.dump(cs)
             if cs.state == syspolicy.change.STATE_PROPOSED:
@@ -97,29 +98,30 @@ def main():
             print
     
     accepted = pt.changesets_with_state(syspolicy.change.STATE_ACCEPTED)
-    print "------- %d accepted ChangeSets -------" % len(accepted)
-    
-    for cs in accepted:
-        with pt.get_cs_lock(cs):
-            print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
-            descr = []
-            for c in cs.changes:
-                descr.append(c.subsystem + ":" + c.operation)
-            print ', '.join(descr)
-    
-    if len(accepted) > 0 and confirm("Enqueue %d ChangeSets?" % len(accepted)):
-        pt.enqueue_changesets(accepted)
-    
-    pt.worker.queue.join()
-    pt.save_state()
-    
-    print "------- %d processed ChangeSets -------" % len(accepted)
-    
-    for cs in accepted:
-        with pt.get_cs_lock(cs):
-            print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
-            descr = []
-            for c in cs.changes:
-                descr.append(c.subsystem + ":" + c.operation)
-            print ', '.join(descr), "=>", syspolicy.change._state_strings[cs.state]
+    if len(accepted) > 0:
+        print "------- %d accepted ChangeSets -------" % len(accepted)
+        
+        for cs in accepted:
+            with pt.get_cs_lock(cs):
+                print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
+                descr = []
+                for c in cs.changes:
+                    descr.append(c.subsystem + ":" + c.operation)
+                print ', '.join(descr)
+        
+        if confirm("Enqueue %d ChangeSets?" % len(accepted)):
+            pt.enqueue_changesets(accepted)
+        
+        pt.worker.queue.join()
+        pt.save_state()
+        
+        print "------- %d processed ChangeSets -------" % len(accepted)
+        
+        for cs in accepted:
+            with pt.get_cs_lock(cs):
+                print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
+                descr = []
+                for c in cs.changes:
+                    descr.append(c.subsystem + ":" + c.operation)
+                print ', '.join(descr), "=>", syspolicy.change._state_strings[cs.state]
 
