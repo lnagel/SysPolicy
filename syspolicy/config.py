@@ -76,6 +76,9 @@ class Config:
             return True
         return False
     
+    def clear(self):
+        self.data.clear()
+    
     def compare_to(self, other_config):
         if isinstance(other_config, Config):
             return compare_trees(self.data, other_config.data)
