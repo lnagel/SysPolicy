@@ -109,8 +109,6 @@ def main():
     
     if len(accepted) > 0 and confirm("Enqueue %d ChangeSets?" % len(accepted)):
         pt.enqueue_changesets(accepted)
-    else:
-        print "Nothing to do.."
     
     pt.worker.queue.join()
     pt.save_state()
