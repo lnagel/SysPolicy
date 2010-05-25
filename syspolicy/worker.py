@@ -17,19 +17,25 @@ class Worker(threading.Thread):
         while True:
             cs = self.queue.get()
             with self.pt.get_cs_lock(cs):
-                print "Worker processing ChangeSet", cs
+                if self.pt.debug:
+                    print "Worker processing ChangeSet", cs
                 for c in cs.changes:
                     with self.pt.get_module_lock(c.subsystem):
                         module = self.pt.module[c.subsystem]
-                        print "Worker processing Change", c, "with module", module.name, 
+                        if self.pt.debug:
+                            print "Worker processing Change", c, "with module", module.name, 
                         try:
                             c.state = module.perform_change(c)
                         except Exception, inst:
-                            print "Worker encountered an exception while processing ChangeSet", cs, ":", inst
+                            print "Worker encountered an exception while processing ChangeSet", cs, "\n", inst
                             c.state = syspolicy.change.STATE_FAILED
-                        print "=>", syspolicy.change.state_string(c.state)
+                        if self.pt.debug:
+                            print "=>", syspolicy.change.state_string(c.state)
                         if c.state == syspolicy.change.STATE_FAILED:
                             break
-                print "This ChangeSet =>", syspolicy.change.state_string(cs.get_state())
-                print
+                # let the ChangeSet update it's status:
+                cs.get_state()
+                if self.pt.debug:
+                    print "This ChangeSet =>", syspolicy.change.state_string(cs.get_state())
+                    print
             self.queue.task_done()

@@ -165,6 +165,6 @@ class Module:
         if p.returncode == 0:
             return syspolicy.change.STATE_COMPLETED
         elif stderr:
-            raise Exception(stderr)
+            raise Exception('Executing: ' + ' '.join(cmd) + '\n' + stderr)
         else:
             return syspolicy.change.STATE_FAILED

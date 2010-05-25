@@ -100,11 +100,12 @@ def main():
     print "------- %d accepted ChangeSets -------" % len(accepted)
     
     for cs in accepted:
-        print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
-        descr = []
-        for c in cs.changes:
-            descr.append(c.subsystem + ":" + c.operation)
-        print ', '.join(descr)
+        with pt.get_cs_lock(cs):
+            print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
+            descr = []
+            for c in cs.changes:
+                descr.append(c.subsystem + ":" + c.operation)
+            print ', '.join(descr)
     
     if len(accepted) > 0 and confirm("Enqueue %d ChangeSets?" % len(accepted)):
         pt.enqueue_changesets(accepted)
@@ -117,9 +118,10 @@ def main():
     print "------- %d processed ChangeSets -------" % len(accepted)
     
     for cs in accepted:
-        print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
-        descr = []
-        for c in cs.changes:
-            descr.append(c.subsystem + ":" + c.operation)
-        print ', '.join(descr), "=>", syspolicy.change._state_strings[cs.state]
+        with pt.get_cs_lock(cs):
+            print "* ChangeSet %d:" % (accepted.index(cs) + 1), 
+            descr = []
+            for c in cs.changes:
+                descr.append(c.subsystem + ":" + c.operation)
+            print ', '.join(descr), "=>", syspolicy.change._state_strings[cs.state]
 
