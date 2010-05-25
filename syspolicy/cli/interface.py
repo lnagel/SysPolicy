@@ -27,9 +27,11 @@ def main():
     if opts.mode_update:
         print "update mode!"
         pt.get_policy_updates()
+        pt.accept_state_changes()
     elif opts.mode_scan:
         pt.clear_state()
         pt.get_policy_updates()
+        pt.accept_state_changes()
     elif opts.add_user is not None:
         print "add user mode!"
         if type(opts.group) != list or len(opts.group) < 1:
