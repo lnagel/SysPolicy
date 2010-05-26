@@ -13,7 +13,7 @@ def main():
     parser = OptParser()
     (opts, args) = parser.parse_args()
     
-    o = [opts.mode_update, opts.mode_scan, opts.add_user, 
+    o = [opts.mode_update, opts.mode_deploy, opts.add_user, 
               opts.mod_user, opts.del_user, opts.add_group, opts.del_group]
     
     # How many values that we have that aren't None or False?
@@ -28,7 +28,7 @@ def main():
     if opts.mode_update:
         pt.get_policy_updates()
         pt.accept_state_changes()
-    elif opts.mode_scan:
+    elif opts.mode_deploy:
         pt.clear_state()
         pt.get_policy_updates()
         pt.accept_state_changes()

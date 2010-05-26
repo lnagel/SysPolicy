@@ -10,7 +10,7 @@ class OptParser(OptionParser):
         self.set_defaults(config='config/main.conf')
         self.set_defaults(debug=False)
         self.set_defaults(mode_update=False)
-        self.set_defaults(mode_scan=False)
+        self.set_defaults(mode_deploy=False)
 
         self.add_option("-c", "--config",
                 dest="config", metavar="FILE", 
@@ -23,9 +23,9 @@ class OptParser(OptionParser):
         mode.add_option("-u", "--update",
                 action="store_true", dest="mode_update",
                 help="check for policy updates")
-        mode.add_option("--scan",
-                action="store_true", dest="mode_scan",
-                help="perform a full system scan to verify the policy")
+        mode.add_option("--deploy",
+                action="store_true", dest="mode_deploy",
+                help="deply the policy (ignore state)")
         mode.add_option("--au", "--add-user",
                 dest="add_user", metavar="USER", 
                 help="Add a new user account")
