@@ -9,6 +9,7 @@ class OptParser(OptionParser):
         
         self.set_defaults(config='config/main.conf')
         self.set_defaults(debug=False)
+        self.set_defaults(pretend=False)
         self.set_defaults(mode_update=False)
         self.set_defaults(mode_deploy=False)
 
@@ -18,6 +19,9 @@ class OptParser(OptionParser):
         self.add_option("-D", "--debug",
                 dest="debug", action="store_true", 
                 help="enable debug code-paths")
+        self.add_option("-P", "--pretend",
+                dest="pretend", action="store_true", 
+                help="only show proposed changes, don't ask for confirmation")
         
         mode = OptionGroup(self, "Run mode")      
         mode.add_option("-u", "--update",

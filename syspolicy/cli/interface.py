@@ -92,13 +92,13 @@ def main():
             print "------- ChangeSets -------"
         for cs in pt.changesets:
             print yaml.dump(cs)
-            if cs.state == syspolicy.change.STATE_PROPOSED:
+            if not opts.pretend and cs.state == syspolicy.change.STATE_PROPOSED:
                 pt.accept_changeset(cs, confirm("Approve this ChangeSet?"))
             print "==> This ChangeSet is", syspolicy.change._state_strings[cs.state]
             print
     
     accepted = pt.changesets_with_state(syspolicy.change.STATE_ACCEPTED)
-    if len(accepted) > 0:
+    if not opts.pretend and len(accepted) > 0:
         print "------- %d accepted ChangeSets -------" % len(accepted)
         
         for cs in accepted:
