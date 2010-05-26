@@ -25,7 +25,7 @@ class OptParser(OptionParser):
                 help="check for policy updates")
         mode.add_option("--deploy",
                 action="store_true", dest="mode_deploy",
-                help="deply the policy (ignore state)")
+                help="deploy the policy (ignore current state)")
         mode.add_option("--au", "--add-user",
                 dest="add_user", metavar="USER", 
                 help="Add a new user account")
