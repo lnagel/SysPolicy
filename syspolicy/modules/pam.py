@@ -15,6 +15,10 @@ from syspolicy.change import Change, ChangeSet
 from syspolicy.modules.module import Module
 
 class PAM(Module):
+    """
+    This module provides PAM configuration support for SysPolicy.
+    """
+    
     def __init__(self):
         Module.__init__(self)
         self.name = "pam"
@@ -22,13 +26,25 @@ class PAM(Module):
                 'users_allow', 'users_deny', 'password']
     
     def cs_rem_attribute(self, group, attribute, value, diff):
+        """
+        This function produces a ChangeSet for removing an attribute.
+        """
         if attribute in self.handled_attributes['services']:
             return self.cs_set_attribute(group, attribute, [], diff)
     
     def cs_set_attribute(self, group, attribute, value, diff):
+        """
+        This function produces a ChangeSet for setting a value in the
+        services policy. It handles the user/group allow and deny attributes
+        as well as the password strenght policy using pam_cracklib.so
+        
+        It will always return a ChangeSet which contains the exact lines
+        that needed to be changed in a specific PAM configuration file.
+        """
         configfile = self.pt.conf.get(['module-pam', 'pam-dir']) + '/' + group
         lines = []
         
+        # attempt to access that configuration file
         if not os.access(configfile, os.F_OK):
             raise Exception("PAM service config file '" + configfile + "' does not exist")
         
@@ -39,6 +55,7 @@ class PAM(Module):
         before = '^account'
         after = None
         
+        # depending on the attribute that is edited, produce the configuration
         if attribute == 'groups_allow':
             for group in value:
                 lines.append('account required pam_succeed_if.so user ingroup ' + group)
@@ -58,7 +75,10 @@ class PAM(Module):
         elif attribute == 'password':
             args = []
             before = '^password(.*)pam_unix.so'
+            
+            # for all the attributes specified in the policy ..
             for k, v in value.items():
+                # check if they are valid
                 if k in ['retry', 'difok', 'difignore', 'minlen',
                         'dcredit', 'ucredit', 'lcredit', 'ocredit',
                         'minclass', 'maxrepeat']:
@@ -74,6 +94,7 @@ class PAM(Module):
             if len(args) > 0:
                 lines.append('password required pam_cracklib.so ' + ' '.join(args))
         
+        # set up the parameters for the edit_configfile Change operation
         params = {}
         params['configfile'] = configfile
         params['before'] = before
