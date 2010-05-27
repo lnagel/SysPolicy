@@ -12,7 +12,18 @@ Handling of command line arguments
 from optparse import OptionParser, OptionGroup
 
 class OptParser(OptionParser):
+    """
+    Option parser class which extends OptionParser from the optparse
+    package, overriding the __init__ function. The objective of this subclass
+    is to separate the argument definitions, defaults etc. from the main
+    CLI class, keeping the code manageable.
+    """
     def __init__(self):
+        """
+        Initializes the class, calling the parent's constructor and adds
+        all the defaults and command line options. This leaves the class
+        in a ready-to-use state for the syspolicy.cli.interface module.
+        """
         OptionParser.__init__(self)
         
         self.set_defaults(config='config/main.conf')
@@ -93,6 +104,12 @@ class OptParser(OptionParser):
         self.add_option_group(user)
     
     def parse_policy(self, opts):
+        """
+        Parses the options specified on the command line and provides
+        a dictionary object that can be merged with the group policy.
+        This function only defines the key-value pairs which have been set
+        on the command line.
+        """
         policy = {}
         if opts.basedir is not None:
             policy['basedir'] = opts.basedir
