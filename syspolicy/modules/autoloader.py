@@ -13,6 +13,9 @@ from syspolicy.modules.quota import Quota
 from syspolicy.modules.state import State
 
 def autoload_modules(pt):
+    """
+    Auto-load the currently available modules to the PolicyTol pt.
+    """
     pt.add_module(Shadow())
     pt.add_module(PAM())
     pt.add_module(Quota())
