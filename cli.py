@@ -7,5 +7,9 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+SysPolicy CLI launcher
+"""
+
 from syspolicy.cli.interface import main
 main()
