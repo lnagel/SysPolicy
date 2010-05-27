@@ -21,6 +21,10 @@ from syspolicy.config import compare_trees
 SETQUOTA = "/usr/sbin/setquota"
 
 class Quota(Module):
+    """
+    This module provides Linux quota configuration support for SysPolicy.
+    """
+    
     def __init__(self):
         Module.__init__(self)
         self.name = "quota"
@@ -35,6 +39,12 @@ class Quota(Module):
             return self.cs_set_attribute(group, attribute, {}, diff)
     
     def cs_set_attribute(self, group, attribute, value, diff):
+        """
+        This function returns a ChangeSet for setting user- and group quotas
+        based on the policy. In case user quotas are being changed for the 
+        group, it queries for all the members of the group and returns a Change
+        element for setting the quota for each of them.
+        """
         cs = ChangeSet()
         if attribute == 'groupquota':
             cs.extend(self.c_set_quota(diff, 'group', group))
@@ -48,6 +58,16 @@ class Quota(Module):
         return cs
     
     def c_set_quota(self, quota, type, object):
+        """
+        This function expands a dictionary of key-value pairs in the quota
+        variable so that a separate Change operation is given for each key
+        (a filesystem mount point) and value (amount of quota).
+        
+        @param quota: Dictionary of mountpoints and their quota
+        @param type: Type of the quota being set ('user' or 'group')
+        @param object: The name of the user or group for which quota is set
+        @return: List of Change elements which set the quota
+        """
         changes = []
         for fs, limit in quota.items():
             c = Change(self.name, "set_quota",
@@ -57,6 +77,16 @@ class Quota(Module):
         return changes
     
     def event_user_modified(self, event, changeset):
+        """
+        This function catches user modification events and updates their
+        quota accordingly if it's needed. Such changes in quota often
+        come from changed main group.
+        
+        The function appends any Change elements to the provided ChangeSet.
+        
+        @param event: The event that was triggered
+        @param changeset: The ChangeSet triggering the event
+        """
         if self.pt.debug:
             print "Quota module caught event", event, "with changeset", changeset
         for change in changeset.changes:
@@ -65,6 +95,16 @@ class Quota(Module):
                 changeset.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
     
     def event_user_removed(self, event, changeset):
+        """
+        This function catches user removal events and removes their
+        quota before the user is removed from the system.
+        
+        The function inserts any Change elements to the provided ChangeSet,
+        before the actual user deletion Changes.
+        
+        @param event: The event that was triggered
+        @param changeset: The ChangeSet triggering the event
+        """
         if self.pt.debug:
             print "Quota module caught event", event, "with changeset", changeset
         changes = []
@@ -80,6 +120,13 @@ class Quota(Module):
             changeset.insert(0, c)
     
     def set_quota(self, change):
+        """
+        This function implements set_quota Changes by executing setquota
+        according to the parameters which are given in the Change.
+        
+        @param change: The set_quota Change element
+        @return: The return value from self.execute(cmd)
+        """
         # /usr/sbin/setquota [-u|-g] [-F quotaformat] <user|group>
         # <block-softlimit> <block-hardlimit> <inode-softlimit> <inode-hardlimit> -a|<filesystem>
         p = change.parameters
@@ -98,6 +145,13 @@ class Quota(Module):
 
 
 def kilobytes(sizestr):
+    """
+    This function converts a text-based size specification to kilobytes.
+    The following units are accepted: K, M, G & T.
+    
+    @param sizestr: The size string containing an integer with a unit character
+    @return: Integer value in kilobytes
+    """
     if isinstance(sizestr, str):
         units = {'k': 1, 'm': 1024, 'g': 1024*1024, 't': 1024*1024*1024}
         m = re.match('^([0-9]*)([kmgt]?)$', sizestr.lower())
