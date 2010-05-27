@@ -7,10 +7,10 @@
 
 from __future__ import with_statement
 
+import yaml
 import syspolicy.change
 from syspolicy.policytool import PolicyTool
 from syspolicy.cli.prompt import confirm, setpwd
-import yaml
 from syspolicy.cli.arguments import OptParser
 
 def main():

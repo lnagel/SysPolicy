@@ -5,15 +5,15 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
-import syspolicy.config
-import syspolicy.change
-from syspolicy.change import Change, ChangeSet
-from syspolicy.policy import merge_into
 import re
 import os
 import os.path
 import tempfile
 import subprocess
+import syspolicy.config
+import syspolicy.change
+from syspolicy.change import Change, ChangeSet
+from syspolicy.policy import merge_into
 
 class Module:
     def __init__(self):

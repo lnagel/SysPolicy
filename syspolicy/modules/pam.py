@@ -5,10 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+import os
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet
 from syspolicy.modules.module import Module
-import os
 
 class PAM(Module):
     def __init__(self):

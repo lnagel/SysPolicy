@@ -7,7 +7,7 @@
 
 import pwd, grp
 import copy
-from datetime import date, timedelta
+import datetime
 import syspolicy.change
 import syspolicy.event
 from syspolicy.change import Change, ChangeSet
@@ -125,7 +125,7 @@ class Shadow(Module):
             cmd.extend(['--comment', p['name']])
         cmd.extend(['--home-dir', p['homedir']])
         if p['expire'] > 0:
-            expiredate = date.today() + timedelta(p['expire'])
+            expiredate = datetime.date.today() + datetime.timedelta(p['expire'])
             cmd.extend(['--expiredate', expiredate.isoformat()])
         cmd.extend(['--inactive', str(p['inactive'])])
         cmd.extend(['--gid', p['group']])
@@ -155,7 +155,7 @@ class Shadow(Module):
         if 'homedir' in p:
             cmd.extend(['--home', p['homedir']])
         if 'expire' in p and p['expire'] > 0:
-            expiredate = date.today() + timedelta(p['expire'])
+            expiredate = datetime.date.today() + datetime.timedelta(p['expire'])
             cmd.extend(['--expiredate', expiredate.isoformat()])
         if 'inactive' in p:
             cmd.extend(['--inactive', str(p['inactive'])])

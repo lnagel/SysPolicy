@@ -6,10 +6,9 @@
 # Released under the GNU General Public License version 3
 
 import string
-from random import choice
 import crypt
 import getpass
-import string
+from random import choice
 from _cracklib import FascistCheck
 
 SALT_TYPE = 6

@@ -5,14 +5,14 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
-import syspolicy.change
-from syspolicy.change import Change, ChangeSet
-import syspolicy.event
-from syspolicy.modules.module import Module
-from syspolicy.config import compare_trees
-import syspolicy.modules.shadow as shadow
 import re
 import copy
+import syspolicy.change
+import syspolicy.event
+import syspolicy.modules.shadow as shadow
+from syspolicy.change import Change, ChangeSet
+from syspolicy.modules.module import Module
+from syspolicy.config import compare_trees
 
 SETQUOTA = "/usr/sbin/setquota"
 
