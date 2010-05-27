@@ -1,5 +1,9 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+# SysPolicy
+# 
+# Copyright (c) 2010 Lenno Nagel
+# Author: Lenno Nagel <lenno-at-nagel.ee>
+# URL: <http://trac.syspolicy.org>
+# Released under the GNU General Public License version 3
 
 from __future__ import with_statement
 
@@ -10,6 +14,12 @@ import yaml
 from syspolicy.cli.arguments import OptParser
 
 def main():
+    """
+    This is the main interface function which should be called when you
+    wish to launch the command line interface. This function takes care of
+    the argument parsing, initializing the PolicyTool and doing the operations
+    on the users' behalf.
+    """
     parser = OptParser()
     (opts, args) = parser.parse_args()
     

@@ -1,3 +1,10 @@
+# SysPolicy
+# 
+# Copyright (c) 2010 Lenno Nagel
+# Author: Lenno Nagel <lenno-at-nagel.ee>
+# URL: <http://trac.syspolicy.org>
+# Released under the GNU General Public License version 3
+
 from syspolicy.modules.shadow import Shadow
 from syspolicy.modules.pam import PAM
 from syspolicy.modules.quota import Quota
