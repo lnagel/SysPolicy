@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Quota configuration support
+"""
+
 import re
 import copy
 import syspolicy.change

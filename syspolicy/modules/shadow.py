@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Shadow users/passwords configuration support
+"""
+
 import pwd, grp
 import copy
 import datetime

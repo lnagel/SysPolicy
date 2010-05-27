@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Common module functions and base class Module
+"""
+
 import re
 import os
 import os.path

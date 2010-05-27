@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Handling of command line arguments
+"""
+
 from optparse import OptionParser, OptionGroup
 
 class OptParser(OptionParser):

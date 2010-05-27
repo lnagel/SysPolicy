@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Base configuration class Config and comparison functions
+"""
+
 import copy
 import yaml
 

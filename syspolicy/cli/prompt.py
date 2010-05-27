@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Functions for prompting the user for choices and passwords
+"""
+
 import string
 import crypt
 import getpass

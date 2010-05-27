@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Change management classes
+"""
+
 STATE_UNKNOWN = 0
 STATE_PROPOSED = 1
 STATE_ACCEPTED = 2

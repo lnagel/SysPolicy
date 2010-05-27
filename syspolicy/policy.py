@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+Policy class for handling policies
+"""
+
 import copy
 from syspolicy.config import Config, DEFAULT
 

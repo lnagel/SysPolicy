@@ -5,6 +5,8 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""Module auto-loader"""
+
 from syspolicy.modules.shadow import Shadow
 from syspolicy.modules.pam import PAM
 from syspolicy.modules.quota import Quota

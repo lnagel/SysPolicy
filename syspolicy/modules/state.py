@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+SysPolicy internal policy state management
+"""
+
 import syspolicy.config
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet

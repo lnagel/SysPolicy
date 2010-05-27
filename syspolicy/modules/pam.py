@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+PAM configuration support
+"""
+
 import os
 import syspolicy.change
 from syspolicy.change import Change, ChangeSet

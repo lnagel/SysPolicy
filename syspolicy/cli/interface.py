@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+SysPolicy command line interface
+"""
+
 from __future__ import with_statement
 
 import yaml

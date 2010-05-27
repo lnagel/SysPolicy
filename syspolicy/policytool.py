@@ -5,6 +5,10 @@
 # URL: <http://trac.syspolicy.org>
 # Released under the GNU General Public License version 3
 
+"""
+SysPolicy's back-end module for user interfaces
+"""
+
 from __future__ import with_statement
 
 import threading
