@@ -14,7 +14,9 @@ from syspolicy.modules.state import State
 
 def autoload_modules(pt):
     """
-    Auto-load the currently available modules to the PolicyTol pt.
+    Auto-load the currently available modules to the PolicyTool.
+    
+    @param pt: The PolicyTool in which the modules are to be loaded.
     """
     pt.add_module(Shadow())
     pt.add_module(PAM())
