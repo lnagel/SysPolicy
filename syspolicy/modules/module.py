@@ -28,10 +28,16 @@ class Module:
     operation handler functions, change operations and event hooks.
     """
     
+    name = None #: the name of the module
+    pt = None #: the PolicyTool instance that has loaded this module
+    handled_attributes = None #: the attributes that this module handles
+    diff_operations = None #: handlers for the various diff operations
+    change_operations = None #: handlers for the various change operations
+    event_hooks = None #: various event hooks that this module registers
+    
     def __init__(self):
         self.name = "generic"
         self.handled_attributes = {}
-        self.pt = None
         self.diff_operations = {
                             syspolicy.config.CONFIG_ADDED: self.cs_new_attribute,
                             syspolicy.config.CONFIG_CHANGED: self.cs_set_attribute,
