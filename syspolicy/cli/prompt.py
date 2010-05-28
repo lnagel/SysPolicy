@@ -15,9 +15,9 @@ import getpass
 from random import choice
 from _cracklib import FascistCheck
 
-SALT_TYPE = 6
-SALT_SIZE = 16
-PASSWORD_SIZE = 10
+SALT_TYPE = 6 #: 1: MD5, 2a: Blowfish, 5: SHA-256, 6: SHA-512
+SALT_SIZE = 16 #: maximum value: 16 characters
+PASSWORD_SIZE = 10 #: default password size if no policy is given
 
 class AbortedException(Exception):
     """
