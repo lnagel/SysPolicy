@@ -192,7 +192,10 @@ class Shadow(Module):
         @param group: The name of the new group
         @return: A ChangeSet
         """
-        cs = ChangeSet(Change(self.name, "add_group", {'group': group}))
+        gpolicy = copy.deepcopy(self.pt.policy['groups'].get([group]))
+        args = merge_into(gpolicy, {'group': group})
+        
+        cs = ChangeSet(Change(self.name, "add_group", args))
         # notify the PolicyTool with a GROUP_ADDED event
         self.pt.emit_event(syspolicy.event.GROUP_ADDED, cs)
         return cs
@@ -204,7 +207,10 @@ class Shadow(Module):
         @param group: The name of the group to be removed
         @return: A ChangeSet
         """
-        cs = ChangeSet(Change(self.name, "del_group", {'group': group}))
+        gpolicy = copy.deepcopy(self.pt.policy['groups'].get([group]))
+        args = merge_into(gpolicy, {'group': group})
+        
+        cs = ChangeSet(Change(self.name, "del_group", args))
         # notify the PolicyTool with a GROUP_REMOVED event
         self.pt.emit_event(syspolicy.event.GROUP_REMOVED, cs)
         return cs

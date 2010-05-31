@@ -33,6 +33,8 @@ class Quota(Module):
         self.event_hooks[syspolicy.event.USER_ADDED] = self.event_user_modified
         self.event_hooks[syspolicy.event.USER_MODIFIED] = self.event_user_modified
         self.event_hooks[syspolicy.event.USER_REMOVED] = self.event_user_removed
+        self.event_hooks[syspolicy.event.GROUP_ADDED] = self.event_group_modified
+        self.event_hooks[syspolicy.event.GROUP_REMOVED] = self.event_group_removed
     
     def cs_rem_attribute(self, group, attribute, value, diff):
         if attribute in self.handled_attributes['groups']:
@@ -114,6 +116,48 @@ class Quota(Module):
                 for fs in quota:
                     quota[fs] = 0
                 changes.extend(self.c_set_quota(quota, 'user', change.parameters['username']))
+        
+        changes.reverse()
+        for c in changes:
+            changeset.insert(0, c)
+    
+    def event_group_modified(self, event, changeset):
+        """
+        This function catches group modification events and updates their
+        quota accordingly if it's needed.
+        
+        The function appends any Change elements to the provided ChangeSet.
+        
+        @param event: The event that was triggered
+        @param changeset: The ChangeSet triggering the event
+        """
+        if self.pt.debug:
+            print "Quota module caught event", event, "with changeset", changeset
+        for change in changeset.changes:
+            if change.operation in ['add_group'] and 'groupquota' in change.parameters:
+                quota = change.parameters['groupquota']
+                changeset.extend(self.c_set_quota(quota, 'group', change.parameters['group']))
+    
+    def event_group_removed(self, event, changeset):
+        """
+        This function catches group removal events and removes their
+        quota before the group is removed from the system.
+        
+        The function inserts any Change elements to the provided ChangeSet,
+        before the actual user deletion Changes.
+        
+        @param event: The event that was triggered
+        @param changeset: The ChangeSet triggering the event
+        """
+        if self.pt.debug:
+            print "Quota module caught event", event, "with changeset", changeset
+        changes = []
+        for change in changeset.changes:
+            if change.operation == 'del_group' and 'groupquota' in change.parameters:            
+                quota = copy.copy(change.parameters['groupquota'])
+                for fs in quota:
+                    quota[fs] = 0
+                changes.extend(self.c_set_quota(quota, 'group', change.parameters['group']))
         
         changes.reverse()
         for c in changes:
