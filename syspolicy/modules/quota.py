@@ -33,7 +33,7 @@ class Quota(Module):
         self.event_hooks[syspolicy.event.USER_ADDED] = self.event_user_modified
         self.event_hooks[syspolicy.event.USER_MODIFIED] = self.event_user_modified
         self.event_hooks[syspolicy.event.USER_REMOVED] = self.event_user_removed
-        self.event_hooks[syspolicy.event.GROUP_ADDED] = self.event_group_modified
+        self.event_hooks[syspolicy.event.GROUP_ADDED] = self.event_group_added
         self.event_hooks[syspolicy.event.GROUP_REMOVED] = self.event_group_removed
     
     def cs_rem_attribute(self, group, attribute, value, diff):
@@ -121,10 +121,10 @@ class Quota(Module):
         for c in changes:
             changeset.insert(0, c)
     
-    def event_group_modified(self, event, changeset):
+    def event_group_added(self, event, changeset):
         """
-        This function catches group modification events and updates their
-        quota accordingly if it's needed.
+        This function catches group addition events and sets their
+        quota if it's needed.
         
         The function appends any Change elements to the provided ChangeSet.
         
