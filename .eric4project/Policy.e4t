@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Policy -->
-<!-- Saved: 2010-05-25, 15:23:17 -->
+<!-- Saved: 2010-05-31, 23:42:49 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Make this function work with more than one group per attribute</Summary>
     <Description></Description>
-    <Created>2010-05-25, 12:54:30</Created>
+    <Created>2010-05-31, 00:23:29</Created>
     <Resource>
       <Filename>syspolicy/modules/pam.py</Filename>
-      <Linenumber>25</Linenumber>
+      <Linenumber>51</Linenumber>
     </Resource>
   </Task>
 </Tasks>
