@@ -199,8 +199,8 @@ def extract_quota(limits):
     1) 256M - hard block size limit is set to 256M
     2) [256M] - hard block size limit is set to 256M
     3) [128M, 256M] - soft block limit 128M, hard limit 256M
-    4) [128M, 256M, 2000, 4000] - soft block limit 128M, hard limit 256M,
-        soft inode limit 2000, hard limit 4000
+    4) [128M, 256M, 2000, 4000] - soft block limit 128M, hard limit 256M, 
+    soft inode limit 2000, hard limit 4000
     
     @param limits: The limits' definition (string or list of strings)
     @return: Dictionary of detected values
