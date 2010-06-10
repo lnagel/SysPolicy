@@ -71,10 +71,12 @@ class Quota(Module):
         @return: List of Change elements which set the quota
         """
         changes = []
-        for fs, limit in quota.items():
-            c = Change(self.name, "set_quota",
-                    {'type': type, 'object': object,
-                     'block-hardlimit': kilobytes(limit), 'filesystem': fs})
+        for fs, limits in quota.items():
+            params = extract_quota(limits)
+            params['type'] = type
+            params['object'] = object
+            params['filesystem'] = fs            
+            c = Change(self.name, "set_quota", params)
             changes.append(c)
         return changes
     
@@ -187,6 +189,37 @@ class Quota(Module):
         
         return self.execute(cmd)
 
+def extract_quota(limits):
+    """
+    This function extracts the quota definition from either a string or a list
+    and returns a dictionary of detected values, which are directly suitable
+    for passing on to the set_quota operation.
+    
+    Detected quita formats (given in YAML syntax):
+    1) 256M - hard block size limit is set to 256M
+    2) [256M] - hard block size limit is set to 256M
+    3) [128M, 256M] - soft block limit 128M, hard limit 256M
+    4) [128M, 256M, 2000, 4000] - soft block limit 128M, hard limit 256M,
+        soft inode limit 2000, hard limit 4000
+    
+    @param limits: The limits' definition (string or list of strings)
+    @return: Dictionary of detected values
+    """
+    quota = {}
+    if isinstance(limits, str):
+        quota['block-hardlimit'] = kilobytes(limits)
+    elif type(limits) is list:
+        if len(limits) == 1:
+            quota['block-hardlimit'] = kilobytes(limits[0])
+        elif len(limits) == 2:
+            quota['block-softlimit'] = kilobytes(limits[0])
+            quota['block-hardlimit'] = kilobytes(limits[1])
+        elif len(limits) == 4:
+            quota['block-softlimit'] = kilobytes(limits[0])
+            quota['block-hardlimit'] = kilobytes(limits[1])
+            quota['inode-softlimit'] = int(limits[2])
+            quota['inode-hardlimit'] = int(limits[3])
+    return quota
 
 def kilobytes(sizestr):
     """
