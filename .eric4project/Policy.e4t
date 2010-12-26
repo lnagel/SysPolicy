@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Policy -->
-<!-- Saved: 2010-05-31, 23:42:49 -->
+<!-- Saved: 2010-10-28, 20:34:33 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Make this function work with more than one group per attribute</Summary>
